@@ -19,31 +19,46 @@
   <span class='header_help'>{{ subtitle }}</span>
 </header>
 
-<table id='source_table'>
-    <h2 class='table_header'>Исходные данные</h2>
+<ul class='anchors'>
+    <li><a href='#source_table'>Исходные данные</a></li>
+    <li><a href='#normalized_table'>Нормализованные данные</a></li>
+    <li><a href='#statistic_table'>Статистические параметры</a></li>
+    <li><a href='#chi_square_table'>Показатель нормальности Пирсона</a></li>
+</ul>
+
+
+<a class='table_header' name='source_table'>Исходные данные</a>
+<table>
     <tbody id='source_table_content'></tbody>
 </table>
 
-<table id='normalized_table'>
-    <h2 class='table_header'>Нормализованные данные</h2>
+<a class='table_header' name='normalized_table'>Нормализованные данные</a>
+<table>
     <tbody id='normalized_table_content'></tbody>
 </table>
 
-<table id='statistic_table'>
-    <h2 class='table_header'>Статистические характеристики</h2>
+<a class='table_header' name='statistic_table'>Статистические характеристики</a>
+<table>
     <tbody id='statistic_table_content'></tbody>
 </table>
 
-<table id='chi_square_table'>
-    <h2 class=='table_header>Показатель нормальности Пирсона</h2>
+<a class='table_header' name='chi_square_table'>Показатель нормальности Пирсона</a>
+<table>
     <tbody id='chi_square_table_content'></tbody>
 </table>
 
 <footer class='bg_blue color_white'>
-  <h3 class='footer_text'>
+  <p class='footer_text'>
       {{ footer }}
-  </h3>
+  </p>
 </footer>
+
+<div class="cover"></div>
+
+<div class="popup">
+    <h3 class="popup_title bg_blue color_white"></h3>
+    <p class="popup_content"></p>
+</div>
 
 </body>
 </html>

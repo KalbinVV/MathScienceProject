@@ -1,4 +1,11 @@
 $(document).ready(function(){
+    const popup = {
+        body: document.querySelector('.popup'),
+        title: document.querySelector('.popup_title'),
+        content: document.querySelector('.popup_content'),
+        cover: document.querySelector('.cover')
+    }
+
     function renderTable(tableContentSelector, data) {
         const tableContent = document.querySelector(tableContentSelector)
 
@@ -39,7 +46,15 @@ $(document).ready(function(){
             dataType: 'json',
             data: {file: FILE_NAME, type: tableType},
             success: function(response) {
-                renderTable(tableSelector, response)
+                if (response.status == true) {
+                    renderTable(tableSelector, response.data)
+                } else {
+                    popup.body.style.display = 'block'
+                    popup.cover.style.display = 'block'
+
+                    popup.title.innerHTML = 'Не удалось загрузить таблицу!'
+                    popup.content.innerHTML = response.reason
+                }
             }
         })
     }

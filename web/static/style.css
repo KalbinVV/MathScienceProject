@@ -37,6 +37,7 @@ input[type=file]::file-selector-button:hover {
 
 header {
     border-radius: 10px;
+    padding: 20px;
 }
 
 .header_text {
@@ -50,11 +51,13 @@ header {
 
 footer {
     border-radius: 10px;
-    text-align: center
+    text-align: center;
+    padding: 10px;
 }
 
 .footer_text {
     font-size: 2vh;
+    font-family: monospace;
 }
 
 .cover {
@@ -124,4 +127,35 @@ th {
 
 .color_white {
     color: white;
+}
+
+.popup_title {
+    border-radius: 20px;
+}
+
+.table_header {
+    font-size: 2vh;
+    font-weight: bold;
+}
+
+li {
+    list-style: none;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.anchors {
+    text-align: center;
+    background: #04AA6D;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+a:visited {
+    color: white;
+}
+
+a:hover {
+    color: #e7e7e7;
 }

@@ -3,6 +3,7 @@ import json
 from flask import Flask, render_template, request
 
 from Configuration.Configuration import Configuration
+from MathScience.Tables.Tables import Tables
 from Utils.Utils import Utils
 
 app = Flask(__name__, static_folder='web/static', template_folder='web/templates')
@@ -25,9 +26,9 @@ def init_report():
     try:
         Utils.save_file(file)
     except (Exception, ) as e:
-        return json.dumps({'status': False, 'reason': e})
+        return {'status': False, 'reason': str(e)}
 
-    return json.dumps({'status': True, 'href': file.filename})
+    return {'status': True, 'href': file.filename}
 
 
 @app.route('/reports/<file_name>')
@@ -46,12 +47,17 @@ def get_table():
     file_name = request.args['file']
     table_type = request.args['type']
 
-    return Utils.convert_dataframe_to_dict({
-        'source': Utils.get_source_table(file_name),
-        'normalized': Utils.get_normalized_table(file_name),
-        'statistic': Utils.get_statistic_table(file_name),
-        'chi_square': Utils.get_chi_square_table(file_name)
-    }[table_type])
+    try:
+        data = Utils.convert_dataframe_to_dict({
+            'source': Tables.get_source_table(file_name),
+            'normalized': Tables.get_normalized_table(file_name),
+            'statistic': Tables.get_statistic_table(file_name),
+            'chi_square': Tables.get_chi_square_table(file_name)
+        }[table_type])
+
+        return {'status': True, 'data': data}
+    except (Exception, ) as e:
+        return {'status': False, 'reason': str(e)}
 
 
 def main():
