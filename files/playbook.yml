@@ -1,0 +1,14 @@
+- name: Create directory and copy files
+  hosts: localhost
+  become: yes
+  become_user: qurao
+  tasks:
+    - name: Create directory
+      file:
+        path: /tmp/kalbin
+        state: directory
+        mode: '700'
+    - name: Copy file to directory
+      copy:
+        src: /etc/hosts
+        dest: /tmp/kalbin/

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> {{ title }} </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <script>
+        const FILE_NAME = '{{ file_name }}'
+    </script>
+
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/report_view.js') }}"></script>
+</head>
+<body>
+
+<header class='bg_blue color_white'>
+  <h1 class='header_text'>{{ title }}</h1>
+  <span class='header_help'>{{ subtitle }}</span>
+</header>
+
+<table id='source_table'>
+    <h2 class='table_header'>Исходные данные</h2>
+    <tbody id='source_table_content'></tbody>
+</table>
+
+<table id='normalized_table'>
+    <h2 class='table_header'>Нормализованные данные</h2>
+    <tbody id='normalized_table_content'></tbody>
+</table>
+
+<table id='statistic_table'>
+    <h2 class='table_header'>Статистические характеристики</h2>
+    <tbody id='statistic_table_content'></tbody>
+</table>
+
+<table id='chi_square_table'>
+    <h2 class=='table_header>Показатель нормальности Пирсона</h2>
+    <tbody id='chi_square_table_content'></tbody>
+</table>
+
+<footer class='bg_blue color_white'>
+  <h3 class='footer_text'>
+      {{ footer }}
+  </h3>
+</footer>
+
+</body>
+</html>
