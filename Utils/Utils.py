@@ -1,12 +1,17 @@
 import os.path
 
+import numpy as np
 import pandas as pd
+from pandas.core.dtypes.common import is_string_dtype
+from scipy.interpolate import make_interp_spline
 
 from werkzeug.datastructures import FileStorage
 
 from Configuration.Configuration import Configuration
 
 import re
+
+from Utils.FloatRange import FloatRange
 
 
 class Utils:
@@ -55,3 +60,40 @@ class Utils:
 
         return search_result.group('file_name'), search_result.group('file_type')
 
+    @staticmethod
+    def get_charts_data(file_name: str, amount_of_intervals: int = 5) -> list:
+        from MathScience.Tables.Tables import Tables
+        data_frame = Tables.get_normalized_table(file_name)
+
+        intervals = []
+
+        for column in data_frame.columns:
+            if is_string_dtype(data_frame[column]):
+                continue
+
+            min_value = data_frame[column].min()
+            max_value = data_frame[column].max()
+
+            interval_step = (max_value - min_value) / amount_of_intervals
+
+            amount_data = []
+            for i in range(amount_of_intervals):
+                float_range = FloatRange(i * interval_step, (i + 1) * interval_step)
+
+                amount = 0
+                for value in data_frame[column]:
+                    if value in float_range:
+                        amount += 1
+
+                amount_data.append(amount)
+
+            x = np.linspace(0.0, 1.0, num=amount_of_intervals)
+
+            interpolation_spline = make_interp_spline(x, amount_data)
+
+            interpolated_x = np.linspace(x.min(), x.max(), 100)
+            interpolated_y = interpolation_spline(interpolated_x)
+
+            intervals.append([column, data_frame[column].to_numpy().tolist(), interpolated_x.tolist(), interpolated_y.tolist()])
+
+        return intervals

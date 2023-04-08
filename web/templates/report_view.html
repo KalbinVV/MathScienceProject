@@ -10,6 +10,7 @@
     </script>
 
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src=" {{ url_for('static', filename='js/plotly.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/report_view.js') }}"></script>
 </head>
 <body>
@@ -19,11 +20,12 @@
   <span class='header_help'>{{ subtitle }}</span>
 </header>
 
-<ul class='anchors'>
+<ul id='anchors'>
     <li><a href='#source_table'>Исходные данные</a></li>
     <li><a href='#normalized_table'>Нормализованные данные</a></li>
     <li><a href='#statistic_table'>Статистические параметры</a></li>
     <li><a href='#chi_square_table'>Показатель нормальности Пирсона</a></li>
+    <li><a href='#correlation_table'>Матрица корреляции</a></li>
 </ul>
 
 
@@ -45,6 +47,14 @@
 <a class='table_header' name='chi_square_table'>Показатель нормальности Пирсона</a>
 <table>
     <tbody id='chi_square_table_content'></tbody>
+</table>
+
+<div id='charts'>
+</div>
+
+<a class='table_header' name='correlation_table'>Матрица корреляции</a>
+<table>
+    <tbody id='correlation_table_content'></tbody>
 </table>
 
 <footer class='bg_blue color_white'>

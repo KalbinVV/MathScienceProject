@@ -1,10 +1,12 @@
 import statistics
 
+import numpy as np
 import pandas as pd
 import scipy
 from pandas.core.dtypes.common import is_string_dtype
-from scipy.stats import poisson, shapiro
+from scipy.stats import poisson, shapiro, chisquare
 
+from Utils.FloatRange import FloatRange
 from Utils.Utils import Utils
 
 
@@ -83,62 +85,71 @@ class Tables:
     @classmethod
     def get_chi_square_table(cls, file_name: str) -> pd.DataFrame:
         amount_of_intervals = 5
+        significance = 0.05
 
         chi_square_dictionary = {
             'Название': [],
             'Количество интервалов': [],
-            'Максимальное значение': [],
+            'Уровень значимости': [],
             'Минимальное значение': [],
+            'Максимальное значение': [],
+            'Шаг': [],
             'Интервалы': [],
-            'Количество значений, попавших в интервалы': [],
-            'Результат статистики': [],
-            'p': [],
-            'Нормальное распределение?': []
+            'Значение хи-квадрат': [],
+            'Результат': []
         }
 
-        data_frame = Utils.load_file(file_name)
+        data_frame = Tables.get_normalized_table(file_name)
 
         for column in data_frame.columns:
             if is_string_dtype(data_frame[column]):
                 continue
 
             chi_square_dictionary['Название'].append(column)
-
-            poisson_array = poisson.rvs(mu=data_frame[column].mean(), size=data_frame[column].count())
-
-            chi_square_test_result = shapiro(data_frame[column])
-
             chi_square_dictionary['Количество интервалов'].append(amount_of_intervals)
+            chi_square_dictionary['Уровень значимости'].append(significance)
 
             min_value = data_frame[column].min()
             max_value = data_frame[column].max()
 
-            intervals_step = (max_value - min_value) / amount_of_intervals
-
-            chi_square_dictionary['Максимальное значение'].append(max_value)
             chi_square_dictionary['Минимальное значение'].append(min_value)
-            chi_square_dictionary['Интервалы'].append(intervals_step)
+            chi_square_dictionary['Максимальное значение'].append(max_value)
 
-            chi_square_dictionary['Результат статистики'].append(chi_square_test_result[0])
-            chi_square_dictionary['p'].append(chi_square_test_result[1])
+            interval_step = (max_value - min_value) / amount_of_intervals
 
-            intervals_result = ''
-            previous_interval = 0
+            chi_square_dictionary['Шаг'].append(interval_step)
+
+            intervals = []
             for i in range(amount_of_intervals):
-                interval = range(int(previous_interval), int(data_frame[column][i] + intervals_step))
+                float_range = FloatRange(i * interval_step, (i + 1) * interval_step)
 
                 amount = 0
                 for value in data_frame[column]:
-                    if value in interval:
+                    if value in float_range:
                         amount += 1
 
-                intervals_result += str(amount) + ';'
+                intervals.append(amount)
 
-                previous_interval = data_frame[column][i] + intervals_step
+            chi_square_dictionary['Интервалы'].append(str(intervals))
 
-            chi_square_dictionary['Количество значений, попавших в интервалы'].append(intervals_result)
+            expected_array = [max_value for _ in range(amount_of_intervals)]
 
-            chi_square_dictionary['Нормальное распределение?'].append(
-                'Да' if chi_square_test_result[1] >= 0.05 else 'Нет')
+            poisson_array = poisson.rvs(mu=data_frame[column].mean(), size=data_frame[column].count())
+            chi_square_measure, p = chisquare(intervals, axis=None)
+
+            chi_square_dictionary['Значение хи-квадрат'].append(chi_square_measure)
+
+            chi_square_dictionary['Результат'].append('Да' if p >= significance else 'Нет')
 
         return pd.DataFrame(chi_square_dictionary)
+
+    @classmethod
+    def get_correlation_table(cls, file_name: str) -> pd.DataFrame:
+        data_frame = cls.get_normalized_table(file_name)
+
+        correlation_data_frame = data_frame.corr(numeric_only=True).round(3)
+
+        # Трюк с колонкой названий
+        correlation_data_frame.insert(0, " ", correlation_data_frame.columns)
+
+        return correlation_data_frame

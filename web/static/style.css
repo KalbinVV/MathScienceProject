@@ -138,13 +138,18 @@ th {
     font-weight: bold;
 }
 
+.chart_header {
+    font-size: 2vh;
+    font-weight: bold;
+}
+
 li {
     list-style: none;
     font-size: 12px;
     font-weight: bold;
 }
 
-.anchors {
+#anchors {
     text-align: center;
     background: #04AA6D;
     color: white;
@@ -158,4 +163,41 @@ a:visited {
 
 a:hover {
     color: #e7e7e7;
+}
+
+a:link {
+    color: white;
+}
+
+.popup a {
+    color: black;
+}
+
+.popup a:visited {
+    color: black;
+}
+
+.strong_binding {
+    background: blue;
+    color: white;
+}
+
+.average_binding {
+    background: #006600;
+    color: white;
+}
+
+.moderate_binding {
+    background: #00cc00;
+    color: white;
+}
+
+.weak_binding {
+    background: #cc0000;
+    color: white;
+}
+
+.very_weak_binding {
+    background: #800000;
+    color: white;
 }

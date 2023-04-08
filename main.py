@@ -52,8 +52,21 @@ def get_table():
             'source': Tables.get_source_table(file_name),
             'normalized': Tables.get_normalized_table(file_name),
             'statistic': Tables.get_statistic_table(file_name),
-            'chi_square': Tables.get_chi_square_table(file_name)
+            'chi_square': Tables.get_chi_square_table(file_name),
+            'correlation': Tables.get_correlation_table(file_name)
         }[table_type])
+
+        return {'status': True, 'data': data}
+    except (Exception, ) as e:
+        return {'status': False, 'reason': str(e)}
+
+
+@app.route('/get_intervals', methods=['GET'])
+def get_intervals():
+    file_name = request.args['file']
+
+    try:
+        data = Utils.get_charts_data(file_name)
 
         return {'status': True, 'data': data}
     except (Exception, ) as e:
