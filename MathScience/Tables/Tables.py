@@ -153,7 +153,13 @@ class Tables:
     def get_correlation_table(cls, file_name: str) -> pd.DataFrame:
         data_frame = cls.get_normalized_table(file_name)
 
-        correlation_data_frame = data_frame.corr(numeric_only=True).round(3)
+        # Fix for PythonAnywhere
+        version_of_pandas = float('.'.join(pd.__version__.split('.')[0:1]))
+
+        if version_of_pandas >= 1.5:
+            correlation_data_frame = data_frame.corr(numeric_only=True).round(3)
+        else:
+            correlation_data_frame = data_frame.corr().round(3)
 
         # Трюк с колонкой названий
         correlation_data_frame.insert(0, " ", correlation_data_frame.columns)
