@@ -1,4 +1,5 @@
 import statistics
+from functools import lru_cache
 
 import numpy as np
 import pandas as pd
@@ -12,10 +13,12 @@ from Utils.Utils import Utils
 
 class Tables:
     @staticmethod
+    @lru_cache
     def get_source_table(file_name: str) -> pd.DataFrame:
         return Utils.load_file(file_name)
 
     @classmethod
+    @lru_cache
     def get_normalized_table(cls, file_name: str) -> pd.DataFrame:
         data_frame = Utils.load_file(file_name)
 
@@ -29,6 +32,7 @@ class Tables:
         return data_frame
 
     @classmethod
+    @lru_cache
     def get_statistic_table(cls, file_name: str) -> pd.DataFrame:
         data_frame = pd.DataFrame(cls.get_normalized_table(file_name))
 
@@ -83,6 +87,7 @@ class Tables:
         return pd.DataFrame(characteristic_dictionary)
 
     @classmethod
+    @lru_cache
     def get_chi_square_table(cls, file_name: str) -> pd.DataFrame:
         amount_of_intervals = 5
         significance = 0.05
@@ -144,6 +149,7 @@ class Tables:
         return pd.DataFrame(chi_square_dictionary)
 
     @classmethod
+    @lru_cache
     def get_correlation_table(cls, file_name: str) -> pd.DataFrame:
         data_frame = cls.get_normalized_table(file_name)
 

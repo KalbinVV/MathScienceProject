@@ -1,4 +1,5 @@
 import os.path
+from functools import lru_cache
 
 import numpy as np
 import pandas as pd
@@ -34,6 +35,7 @@ class Utils:
         print(f'File saved: {file_path}')
 
     @staticmethod
+    @lru_cache
     def load_file(file_name: str) -> pd.DataFrame:
         file_path = os.path.join(Configuration.folder_path, file_name)
 
@@ -61,6 +63,7 @@ class Utils:
         return search_result.group('file_name'), search_result.group('file_type')
 
     @staticmethod
+    @lru_cache
     def get_charts_data(file_name: str, amount_of_intervals: int = 5) -> list:
         from MathScience.Tables.Tables import Tables
         data_frame = Tables.get_normalized_table(file_name)

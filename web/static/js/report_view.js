@@ -161,12 +161,34 @@ $(document).ready(function(){
         })
     }
 
-    loadTable('#source_table_content', 'source')
-    loadTable('#normalized_table_content', 'normalized')
-    loadTable('#statistic_table_content', 'statistic')
-    loadTable('#chi_square_table_content', 'chi_square')
-    loadTable('#correlation_table_content', 'correlation')
+    $('#source_table_button').click(event => {
+        event.currentTarget.style.display = 'none'
+        loadTable('#source_table_content', 'source')
+    })
 
-    loadCharts()
+    $('#normalized_table_button').click(event => {
+        event.currentTarget.style.display = 'none'
+        loadTable('#normalized_table_content', 'normalized')
+    })
+
+    $('#statistic_table_button').click(event => {
+        event.currentTarget.style.display = 'none'
+        loadTable('#statistic_table_content', 'statistic')
+    })
+
+    $('#chi_square_table_button').click(event => {
+        event.currentTarget.style.display = 'none'
+        loadTable('#chi_square_table_content', 'chi_square')
+    })
+
+    $('#correlation_table_button').click(event => {
+        event.currentTarget.style.display = 'none'
+        loadTable('#correlation_table_content', 'correlation')
+    })
+
+    $('#charts_button').click(event => {
+        event.currentTarget.style.display = 'none'
+        loadCharts()
+    })
 
 })

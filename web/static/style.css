@@ -157,12 +157,16 @@ li {
     padding: 10px;
 }
 
+a {
+    transition: all 0.3s ease 0s;
+}
+
 a:visited {
     color: white;
 }
 
 a:hover {
-    color: #e7e7e7;
+    color: black;
 }
 
 a:link {
@@ -200,4 +204,19 @@ a:link {
 .very_weak_binding {
     background: #800000;
     color: white;
+}
+
+.display_button {
+    background: #04AA6D;
+    color: white;
+    border-radius: 10px;
+    border-width: 0px;
+    padding: 5px;
+    font-family: monospace;
+    font-weight: bold;
+    transition: all 0.3s ease 0s;
+}
+
+.display_button:hover {
+    background: #084cdf;
 }
