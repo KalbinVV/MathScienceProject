@@ -6,6 +6,8 @@ from Utils.Utils import Utils
 
 app = Flask(__name__, static_folder='web/static', template_folder='web/templates')
 
+app.config['MAX_CONTENT_LENGTH'] = 3 * 1024 * 1024  # 3 MegaBytes
+
 
 @app.route('/')
 def index():
@@ -22,11 +24,11 @@ def init_report():
     file = request.files['file']
 
     try:
-        Utils.save_file(file)
+        file_name = Utils.save_file(file)
     except (Exception, ) as e:
         return {'status': False, 'reason': str(e)}
 
-    return {'status': True, 'href': file.filename}
+    return {'status': True, 'href': file_name}
 
 
 @app.route('/reports/<file_name>')

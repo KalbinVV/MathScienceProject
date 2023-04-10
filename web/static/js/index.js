@@ -31,6 +31,13 @@ $(document).ready(function(){
 
                 popup.cover.style.display = 'block'
                 popup.body.style.display = 'block'
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                popup.title.innerHTML = 'Не удалось загрузить файл!'
+                popup.content.innerHTML = errorThrown
+
+                popup.cover.style.display = 'block'
+                popup.body.style.display = 'block'
             }
         })
     })

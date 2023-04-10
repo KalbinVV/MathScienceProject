@@ -17,7 +17,7 @@ from Utils.FloatRange import FloatRange
 
 class Utils:
     @classmethod
-    def save_file(cls, file: FileStorage):
+    def save_file(cls, file: FileStorage) -> str:
         folder_path = os.path.join('.', Configuration.folder_path)
 
         if not os.path.isdir(folder_path):
@@ -28,14 +28,17 @@ class Utils:
         if file_type != 'xlsx':
             raise Exception('Неверный формат файла!')
 
-        file_path = os.path.join(folder_path, file.filename)
+        count_of_files = cls.get_count_of_files_in_directory(folder_path)
+
+        final_file_name = f'{count_of_files}.data'
+
+        file_path = os.path.join(folder_path, final_file_name)
 
         file.save(file_path)
 
-        print(f'File saved: {file_path}')
+        return final_file_name
 
     @staticmethod
-    @lru_cache
     def load_file(file_name: str) -> pd.DataFrame:
         file_path = os.path.join(Configuration.folder_path, file_name)
 
@@ -52,6 +55,16 @@ class Utils:
             converted_dictionary['size'] = int(data_frame[column].count())
 
         return converted_dictionary
+
+    @staticmethod
+    def get_count_of_files_in_directory(dir_path: str) -> int:
+        count = 0
+
+        for path in os.listdir(dir_path):
+            if os.path.isfile(os.path.join(dir_path, path)):
+                count += 1
+
+        return count
 
     # Return information about file name and file type
     # Input: sample file.docx
