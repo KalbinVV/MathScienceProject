@@ -80,7 +80,7 @@ $(document).ready(function(){
     const anchors = document.querySelector('#anchors')
 
     function drawChart(chartData, i) {
-        const title = chartData[0] + ' | График'
+        const title = chartData[0] + CHART_PREFIX
         const x = chartData[1]
         const interpolated_x = chartData[2]
         const interpolated_y = chartData[3]

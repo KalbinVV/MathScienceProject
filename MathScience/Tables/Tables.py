@@ -1,12 +1,12 @@
 import statistics
 from functools import lru_cache
 
-import numpy as np
 import pandas as pd
 import scipy
 from pandas.core.dtypes.common import is_string_dtype
-from scipy.stats import poisson, shapiro, chisquare
+from scipy.stats import poisson, chisquare
 
+from Configuration.Configuration import Configuration
 from Utils.FloatRange import FloatRange
 from Utils.Utils import Utils
 
@@ -36,53 +36,45 @@ class Tables:
     def get_statistic_table(cls, file_name: str) -> pd.DataFrame:
         data_frame = pd.DataFrame(cls.get_normalized_table(file_name))
 
-        key_field_name = 'Название'
+        configuration = Configuration.language['statistic_table']
 
-        characteristic_dictionary = {
-            'Название': [],
-            'Мода': [],
-            'Медиана': [],
-            'Дисперсия': [],
-            'Среднее арифметическое': [],
-            'Стандартное отклонение': [],
-            'Математическое ожидание': [],
-            'Среднее геометрическое': [],
-            'Эксцесс': [],
-            'Асимметрия': [],
-            'Средняя ошибка выборки': [],
-            'Предельная ошибка выборки': [],
-            'Объем выборки': []
-        }
+        array_of_fields = ['name', 'mode', 'median', 'dispersion', 'arithmetical_mean',
+                           'standard_deviation', 'expected_value', 'geometric_mean', 'excess',
+                           'asymmetry', 'average_sampling_error', 'marginal_sampling_error', 'sample_size']
+
+        characteristic_dictionary = dict()
+
+        for field in array_of_fields:
+            characteristic_dictionary[configuration[field]] = list()
 
         for column in data_frame.columns:
             if is_string_dtype(data_frame[column]):
                 continue
 
-            characteristic_dictionary['Название'].append(column)
-            characteristic_dictionary['Мода'].append(statistics.mode(data_frame[column]))
-            characteristic_dictionary['Медиана'].append(statistics.median(data_frame[column]))
-            characteristic_dictionary['Дисперсия'].append(statistics.variance(data_frame[column]))
-            characteristic_dictionary['Среднее арифметическое'].append(statistics.mean(data_frame[column]))
-            characteristic_dictionary['Стандартное отклонение'].append(statistics.stdev(data_frame[column]))
-            characteristic_dictionary['Математическое ожидание'].append(statistics.mean(data_frame[column]))
+            characteristic_dictionary[configuration['name']].append(column)
+            characteristic_dictionary[configuration['mode']].append(statistics.mode(data_frame[column]))
+            characteristic_dictionary[configuration['median']].append(statistics.median(data_frame[column]))
+            characteristic_dictionary[configuration['dispersion']].append(statistics.variance(data_frame[column]))
+            characteristic_dictionary[configuration['arithmetical_mean']].append(statistics.mean(data_frame[column]))
+            characteristic_dictionary[configuration['standard_deviation']].append(statistics.stdev(data_frame[column]))
+            characteristic_dictionary[configuration['expected_value']].append(statistics.mean(data_frame[column]))
 
             try:
-                characteristic_dictionary['Среднее геометрическое'].append(
-                    statistics.geometric_mean(data_frame[column]))
+                characteristic_dictionary[configuration['geometric_mean']].append(statistics.geometric_mean(data_frame[column]))
             except (Exception,):
-                characteristic_dictionary['Среднее геометрическое'].append(0)
+                characteristic_dictionary[configuration['geometric_mean']].append(0)
 
-            characteristic_dictionary['Средняя ошибка выборки'].append(
+            characteristic_dictionary[configuration['average_sampling_error']].append(
                 ((statistics.variance(data_frame[column])) / 15 * (1 - 15 / 100)) ** 0.5)
-            characteristic_dictionary['Предельная ошибка выборки'].append(
+            characteristic_dictionary[configuration['marginal_sampling_error']].append(
                 2 * (((statistics.variance(data_frame[column])) / 15 * (1 - 15 / 100)) ** 0.5))
-            characteristic_dictionary['Объем выборки'].append(
+            characteristic_dictionary[configuration['sample_size']].append(
                 (2 * 2 * statistics.variance(data_frame[column]) * 100) / (
                         2 * 2 * statistics.variance(data_frame[column]) + (
                         2 * (((statistics.variance(data_frame[column])) / 15 * (1 - 15 / 100)) ** 0.5)) ** 2 * 100))
 
-            characteristic_dictionary['Эксцесс'].append(scipy.stats.kurtosis(data_frame[column]))
-            characteristic_dictionary['Асимметрия'].append(scipy.stats.skew(data_frame[column]))
+            characteristic_dictionary[configuration['excess']].append(scipy.stats.kurtosis(data_frame[column]))
+            characteristic_dictionary[configuration['asymmetry']].append(scipy.stats.skew(data_frame[column]))
 
         return pd.DataFrame(characteristic_dictionary)
 
@@ -137,9 +129,6 @@ class Tables:
 
             chi_square_dictionary['Интервалы'].append(str(intervals))
 
-            expected_array = [max_value for _ in range(amount_of_intervals)]
-
-            poisson_array = poisson.rvs(mu=data_frame[column].mean(), size=data_frame[column].count())
             chi_square_measure, p = chisquare(intervals, axis=None)
 
             chi_square_dictionary['Значение хи-квадрат'].append(chi_square_measure)

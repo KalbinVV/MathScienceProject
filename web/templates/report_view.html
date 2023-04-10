@@ -7,6 +7,7 @@
 
     <script>
         const FILE_NAME = '{{ file_name }}'
+        const CHART_PREFIX = '{{ chart_prefix }}'
     </script>
 
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
@@ -21,46 +22,46 @@
 </header>
 
 <ul id='anchors'>
-    <li><a href='#source_table'>Исходные данные</a></li>
-    <li><a href='#normalized_table'>Нормализованные данные</a></li>
-    <li><a href='#statistic_table'>Статистические параметры</a></li>
-    <li><a href='#chi_square_table'>Показатель нормальности Пирсона</a></li>
-    <li><a href='#correlation_table'>Матрица корреляции</a></li>
+    <li><a href='#source_table'>{{ source_table_header }}</a></li>
+    <li><a href='#normalized_table'>{{ normalized_table_header }}</a></li>
+    <li><a href='#statistic_table'>{{ statistic_table_header }}</a></li>
+    <li><a href='#chi_square_table'>{{ pearson_table_header }}</a></li>
+    <li><a href='#correlation_table'>{{ correlation_matrix_header }}</a></li>
 </ul>
 
 
-<a class='table_header' name='source_table'>Исходные данные</a>
-<button id='source_table_button' class='display_button'>Отобразить таблицу</button>
+<a class='table_header' name='source_table'>{{ source_table_header }}</a>
+<button id='source_table_button' class='display_button'>{{ show_table_button }}</button>
 <table>
     <tbody id='source_table_content'></tbody>
 </table>
 
-<a class='table_header' name='normalized_table'>Нормализованные данные</a>
-<button id='normalized_table_button' class='display_button'>Отобразить таблицу</button>
+<a class='table_header' name='normalized_table'>{{ normalized_table_header }}</a>
+<button id='normalized_table_button' class='display_button'>{{ show_table_button }}</button>
 <table>
     <tbody id='normalized_table_content'></tbody>
 </table>
 
-<a class='table_header' name='statistic_table'>Статистические характеристики</a>
-<button id='statistic_table_button' class='display_button'>Отобразить таблицу</button>
+<a class='table_header' name='statistic_table'>{{ statistic_table_header }}</a>
+<button id='statistic_table_button' class='display_button'>{{ show_table_button }}</button>
 <table>
     <tbody id='statistic_table_content'></tbody>
 </table>
 
-<a class='table_header' name='chi_square_table'>Показатель нормальности Пирсона</a>
-<button id='chi_square_table_button' class='display_button'>Отобразить таблицу</button>
+<a class='table_header' name='chi_square_table'>{{ pearson_table_header }}</a>
+<button id='chi_square_table_button' class='display_button'>{{ show_table_button }}</button>
 <table>
     <tbody id='chi_square_table_content'></tbody>
 </table>
 
-<a class='table_header' name='correlation_table'>Матрица корреляции</a>
-<button id='correlation_table_button' class='display_button'>Отобразить таблицу</button>
+<a class='table_header' name='correlation_table'>{{ correlation_matrix_header }}</a>
+<button id='correlation_table_button' class='display_button'>{{ show_table_button }}</button>
 <table>
     <tbody id='correlation_table_content'></tbody>
 </table>
 
-<a class='table_header'>Графики</a>
-<button id='charts_button' class='display_button'>Отобразить графики</button>
+<a class='table_header'>{{ charts_header }}</a>
+<button id='charts_button' class='display_button'>{{ show_charts_button }}</button>
 <div id='charts'>
 </div>
 

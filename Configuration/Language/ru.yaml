@@ -1,3 +1,31 @@
 title: MathScienceProject
 subtitle: Курсовой проект, Кальбин Владимир
 footer: Кальбин Владимир, 2023
+source_table:
+  header: 'Исходные данные'
+normalized_table:
+  header: 'Нормированные данные'
+pearson_table:
+  header: 'Показатель нормальности Пирсона'
+statistic_table:
+  header: 'Статистические параметры'
+  name: 'Название'
+  mode: 'Мода'
+  median: 'Медиана'
+  dispersion: 'Дисперсия'
+  arithmetical_mean: 'Ср. арифметическое'
+  standard_deviation: 'Стандартное отклонение'
+  expected_value: 'Математическое ожидание'
+  geometric_mean: 'Ср. геометрическое'
+  average_sampling_error: 'Средняя ошибка выборки'
+  marginal_sampling_error: 'Предельная ошибка выборки'
+  sample_size: 'Объем выборки'
+  excess: 'Эксцесс'
+  asymmetry: 'Асимметрия'
+correlation_matrix:
+  header: 'Матрица корреляции'
+ui:
+  show_table_button: 'Отобразить таблицу'
+  show_charts_button: 'Отобразить графики'
+  charts_header: 'Графики'
+  chart_prefix: ' | График'
