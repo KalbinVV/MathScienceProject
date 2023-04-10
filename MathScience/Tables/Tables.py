@@ -78,16 +78,22 @@ class Tables:
 
         return pd.DataFrame(characteristic_dictionary)
 
+    # TODO: Add support for all table types
     @classmethod
     @lru_cache
     def get_chi_square_table(cls, file_name: str) -> pd.DataFrame:
         amount_of_intervals = 5
         significance = 0.05
 
+        key_field = 'Название'
+        critical_value = 3.33
+
         chi_square_dictionary = {
             'Название': [],
             'Количество интервалов': [],
             'Уровень значимости': [],
+            'Число степеней свободы': [],
+            'Критическое значение': [],
             'Минимальное значение': [],
             'Максимальное значение': [],
             'Шаг': [],
@@ -105,6 +111,8 @@ class Tables:
             chi_square_dictionary['Название'].append(column)
             chi_square_dictionary['Количество интервалов'].append(amount_of_intervals)
             chi_square_dictionary['Уровень значимости'].append(significance)
+            chi_square_dictionary['Число степеней свободы'].append(data_frame[key_field].count() - 3)
+            chi_square_dictionary['Критическое значение'].append(critical_value)
 
             min_value = data_frame[column].min()
             max_value = data_frame[column].max()
@@ -133,7 +141,7 @@ class Tables:
 
             chi_square_dictionary['Значение хи-квадрат'].append(chi_square_measure)
 
-            chi_square_dictionary['Результат'].append('Да' if p >= significance else 'Нет')
+            chi_square_dictionary['Результат'].append('Да' if chi_square_measure <= critical_value else 'Нет')
 
         return pd.DataFrame(chi_square_dictionary)
 

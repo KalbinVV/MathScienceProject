@@ -72,6 +72,13 @@ $(document).ready(function(){
                     popup.title.innerHTML = 'Не удалось загрузить таблицу!'
                     popup.content.innerHTML = response.reason
                 }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                popup.body.style.display = 'block'
+                popup.cover.style.display = 'block'
+
+                popup.title.innerHTML = 'Не удалось загрузить таблицу!'
+                popup.content.innerHTML = textStatus
             }
         })
     }
@@ -157,6 +164,13 @@ $(document).ready(function(){
                     popup.title.innerHTML = 'Не удалось загрузить графы!'
                     popup.content.innerHTML = response.reason
                 }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                popup.body.style.display = 'block'
+                popup.cover.style.display = 'block'
+
+                popup.title.innerHTML = 'Не удалось загрузить графы!'
+                popup.content.innerHTML = textStatus
             }
         })
     }
