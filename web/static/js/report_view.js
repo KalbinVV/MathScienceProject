@@ -34,13 +34,13 @@ $(document).ready(function(){
                 }
 
                 if(is_correlation_table && !isNaN(value)) {
-                    if(value > 0.7) {
+                    if(Math.abs(value) > 0.7) {
                         className = 'strong_binding'
-                    } else if (value > 0.5) {
+                    } else if (Math.abs(value) > 0.5) {
                         className = 'average_binding'
-                    } else if (value > 0.3) {
+                    } else if (Math.abs(value) > 0.3) {
                         className = 'moderate_binding'
-                    } else if (value > 0.2) {
+                    } else if (Math.abs(value) > 0.2) {
                         className = 'weak_binding'
                     } else {
                         className = 'very_weak_binding'
