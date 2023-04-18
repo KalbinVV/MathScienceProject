@@ -30,37 +30,41 @@
 </ul>
 
 
-<a class='table_header' name='source_table'>{{ source_table_header }}</a>
+<h3 class='table_header' id='source_table'>{{ source_table_header }}</h3>
 <button id='source_table_button' class='display_button'>{{ show_table_button }}</button>
 <table>
     <tbody id='source_table_content'></tbody>
 </table>
 
-<a class='table_header' name='normalized_table'>{{ normalized_table_header }}</a>
+<h3 class='table_header' id='normalized_table'>{{ normalized_table_header }}</h3>
 <button id='normalized_table_button' class='display_button'>{{ show_table_button }}</button>
 <table>
     <tbody id='normalized_table_content'></tbody>
 </table>
 
-<a class='table_header' name='statistic_table'>{{ statistic_table_header }}</a>
+<h3 class='table_header' id='statistic_table'>{{ statistic_table_header }}</h3>
 <button id='statistic_table_button' class='display_button'>{{ show_table_button }}</button>
 <table>
     <tbody id='statistic_table_content'></tbody>
 </table>
 
-<a class='table_header' name='chi_square_table'>{{ pearson_table_header }}</a>
+<h3 class='table_header' id='chi_square_table'>{{ pearson_table_header }}</h3>
 <button id='chi_square_table_button' class='display_button'>{{ show_table_button }}</button>
 <table>
     <tbody id='chi_square_table_content'></tbody>
 </table>
 
-<a class='table_header' name='correlation_table'>{{ correlation_matrix_header }}</a>
+<h3 class='table_header' id='correlation_table'>{{ correlation_matrix_header }}</h3>
 <button id='correlation_table_button' class='display_button'>{{ show_table_button }}</button>
 <table>
     <tbody id='correlation_table_content'></tbody>
 </table>
 
-<a class='table_header'>{{ charts_header }}</a>
+<h3 class='table_header' name='correlation_pleiades'>Корреляционные плеяды</h3>
+<button id='show_correlation_pleiades_button' class='display_button'>Показать диаграмму</button>
+<canvas id='correlation_pleiades_canvas'></canvas>
+
+<h3 class='table_header'>{{ charts_header }}</h3>
 <button id='charts_button' class='display_button'>{{ show_charts_button }}</button>
 <div id='charts'>
 </div>

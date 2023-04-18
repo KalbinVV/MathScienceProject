@@ -6,6 +6,14 @@ $(document).ready(function(){
         cover: document.querySelector('.cover')
     }
 
+    const correlationPleiadesConfiguration = {
+        canvasWidth: 800,
+        canvasHeight: 600,
+        circleRadius: 200,
+        pointWidth: 5,
+        pointHeight: 5
+    }
+
     function renderTable(tableContentSelector, data, is_correlation_table=false) {
         const tableContent = document.querySelector(tableContentSelector)
 
@@ -57,14 +65,18 @@ $(document).ready(function(){
         }
     }
 
-    function loadTable(tableSelector, tableType) {
+    function loadTable(tableSelector, tableType, shouldRender = true) {
         $.ajax({
             url: '/get_table',
             method: 'get',
             data: {file: FILE_NAME, type: tableType},
             success: function(response) {
                 if (response.status == true) {
-                    renderTable(tableSelector, response.data, tableType == 'correlation' ? true : false)
+                    if(shouldRender) {
+                        renderTable(tableSelector, response.data, tableType == 'correlation' ? true : false)
+                    }
+
+                    return response.data
                 } else {
                     popup.body.style.display = 'block'
                     popup.cover.style.display = 'block'
@@ -203,6 +215,131 @@ $(document).ready(function(){
     $('#charts_button').click(event => {
         event.currentTarget.style.display = 'none'
         loadCharts()
+    })
+
+    function getPointsToFormCircle(amountOfPoints, radius, center) {
+        const points = []
+
+        const slice = 2 * Math.PI / amountOfPoints
+
+        for(let i = 0; i < amountOfPoints; i++) {
+            const angle = slice * i
+
+            const x = center.x + radius * Math.cos(angle)
+            const y = center.y + radius * Math.sin(angle)
+
+            points.push({x: x, y: y})
+        }
+
+        return points
+    }
+
+
+    async function showCorrelationPleiades() {
+        const canvas = document.getElementById('correlation_pleiades_canvas')
+        const ctx = canvas.getContext('2d');
+
+        canvas.style.display = 'block'
+
+        canvas.setAttribute('width', correlationPleiadesConfiguration.canvasWidth)
+        canvas.setAttribute('height', correlationPleiadesConfiguration.canvasHeight)
+
+        const correlationData = await loadTable(null, 'correlation', false)
+        console.log(correlationData)
+
+        const centerPoint = {
+                x: correlationPleiadesConfiguration.canvasWidth / 2,
+                y: correlationPleiadesConfiguration.canvasHeight / 2
+        }
+
+        $.ajax({
+            url: '/get_table',
+            method: 'get',
+            data: {file: FILE_NAME, type: 'correlation'},
+            success: function(response) {
+                if (response.status == true) {
+                    const correlationData = response.data
+
+                    console.log(correlationData)
+
+                    const points = getPointsToFormCircle(correlationData.size, correlationPleiadesConfiguration.circleRadius, centerPoint)
+
+                    ctx.fillStyle = 'black'
+                    ctx.font = "12px serif";
+
+                    let i = 1
+
+                    let pointsDictionary = {}
+
+                    points.forEach(point => {
+                        ctx.fillRect(point.x, point.y, correlationPleiadesConfiguration.pointWidth, correlationPleiadesConfiguration.pointHeight)
+
+                        const columnName = correlationData.columns[i]
+
+                        pointsDictionary[columnName] = {x: point.x, y: point.y}
+
+                        i += 1
+                    })
+
+                    correlationData.columns.forEach(column => {
+                        if(column == ' ') return
+
+                        const point = pointsDictionary[column]
+
+                        let i = 1
+                        correlationData[column].forEach(data => {
+                            const anotherPoint = pointsDictionary[correlationData.columns[i]]
+
+                            ctx.beginPath()
+                            ctx.moveTo(point.x, point.y)
+                            ctx.lineTo(anotherPoint.x, anotherPoint.y)
+
+                            if (Math.abs(data) > 0.7) {
+                                ctx.strokeStyle = 'blue'
+                            } else if (Math.abs(data) > 0.5) {
+                                ctx.strokeStyle = '#006600'
+                            } else if (Math.abs(data) > 0.3) {
+                                ctx.strokeStyle = '#00cc00'
+                            } else if (Math.abs(data) > 0.2) {
+                                ctx.strokeStyle = '#cc0000'
+                            } else {
+                                ctx.strokeStyle = '#800000'
+                            }
+
+                            ctx.stroke()
+
+                            i += 1
+                        })
+
+                        i = 1
+
+                        points.forEach(point => {
+                            ctx.fillText(correlationData.columns[i], point.x + 5, point.y + 10)
+
+                            i += 1
+                        })
+                    })
+                } else {
+                    popup.body.style.display = 'block'
+                    popup.cover.style.display = 'block'
+
+                    popup.title.innerHTML = 'Не удалось корреляционные плеяды!'
+                    popup.content.innerHTML = response.reason
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                popup.body.style.display = 'block'
+                popup.cover.style.display = 'block'
+
+                popup.title.innerHTML = 'Не удалось загрузить корреляционные плеяды!'
+                popup.content.innerHTML = textStatus
+            }
+        })
+    }
+
+    $('#show_correlation_pleiades_button').click(event => {
+        event.currentTarget.style.display = 'none'
+        showCorrelationPleiades()
     })
 
 })
