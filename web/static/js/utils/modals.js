@@ -1,3 +1,4 @@
+// Singleton function for modal
 function initModal(){
     let modal = null
 
@@ -6,6 +7,7 @@ function initModal(){
             return modal
         }
 
+        // Selectors of certain elements
         const domElement = {
             body: document.querySelector('.popup'),
             title: document.querySelector('.popup_title'),
