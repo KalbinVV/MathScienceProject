@@ -1,11 +1,4 @@
 $(document).ready(function(){
-    const popup = {
-        body: document.querySelector('.popup'),
-        title: document.querySelector('.popup_title'),
-        content: document.querySelector('.popup_content'),
-        cover: document.querySelector('.cover')
-    }
-
     const correlationPleiadesConfiguration = {
         canvasWidth: 800,
         canvasHeight: 600,
@@ -78,19 +71,17 @@ $(document).ready(function(){
 
                     return response.data
                 } else {
-                    popup.body.style.display = 'block'
-                    popup.cover.style.display = 'block'
+                    const modal = initModal()
 
-                    popup.title.innerHTML = 'Не удалось загрузить таблицу!'
-                    popup.content.innerHTML = response.reason
+                    modal.setAttributes('Не удалось загрузить таблицу!', response.reason)
+                    modal.show()
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                popup.body.style.display = 'block'
-                popup.cover.style.display = 'block'
+                const modal = initModal()
 
-                popup.title.innerHTML = 'Не удалось загрузить таблицу!'
-                popup.content.innerHTML = textStatus
+                modal.setAttributes('Не удалось загрузить таблицу!', 'Ошибка сети')
+                modal.show()
             }
         })
     }
@@ -170,19 +161,17 @@ $(document).ready(function(){
                         drawChart(chartData, i)
                     })
                 } else {
-                    popup.body.style.display = 'block'
-                    popup.cover.style.display = 'block'
+                    const modal = initModal()
 
-                    popup.title.innerHTML = 'Не удалось загрузить графы!'
-                    popup.content.innerHTML = response.reason
+                    modal.setAttributes('Не удалось загрузить графы!', response.reason)
+                    modal.show()
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                popup.body.style.display = 'block'
-                popup.cover.style.display = 'block'
+                const modal = initModal()
 
-                popup.title.innerHTML = 'Не удалось загрузить графы!'
-                popup.content.innerHTML = textStatus
+                modal.setAttributes('Не удалось загрузить графы!', 'Ошибка сети')
+                modal.show()
             }
         })
     }
@@ -320,19 +309,17 @@ $(document).ready(function(){
                         })
                     })
                 } else {
-                    popup.body.style.display = 'block'
-                    popup.cover.style.display = 'block'
+                    const modal = initModal()
 
-                    popup.title.innerHTML = 'Не удалось корреляционные плеяды!'
-                    popup.content.innerHTML = response.reason
+                    modal.setAttributes('Не удалось корреляционные плеяды!', response.reason)
+                    modal.show()
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                popup.body.style.display = 'block'
-                popup.cover.style.display = 'block'
+                const modal = initModal()
 
-                popup.title.innerHTML = 'Не удалось загрузить корреляционные плеяды!'
-                popup.content.innerHTML = textStatus
+                modal.setAttributes('Не удалось загрузить корреляционные плеяды!', 'Ошибка сети')
+                modal.show()
             }
         })
     }

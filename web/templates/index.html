@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <title> {{ title }} </title>
     <link rel="stylesheet" href="/static/style.css">
-    <script src="/static/js/jquery.min.js"></script>
-    <script src="/static/js/index.js"></script>
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/utils/modals.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index/index.js') }}"></script>
 </head>
 <body>
 
