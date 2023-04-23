@@ -224,3 +224,25 @@ a:link {
 #correlation_pleiades_canvas {
     display: none;
 }
+
+.correlation__btn-wrap{
+    display:flex;
+    align-items: center;
+}
+.correlation__btn{
+    border-radius: 10px;
+    border: 1px solid #9BB7C9;
+    background-color: #fff;
+    text-transform: uppercase;
+    font-size: 16px;
+    color: #000000;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    padding: 4px 20px;
+}
+.correlation__btn:hover{
+    background-color: #9BB7C9;
+}
+.correlation__btn:not(:last-child){
+    margin-right: 10px;
+}

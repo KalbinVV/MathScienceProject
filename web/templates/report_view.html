@@ -15,6 +15,7 @@
     <script src=" {{ url_for('static', filename='js/report_view/plotly.min.js') }}"></script>
 
     <script src=" {{ url_for('static', filename='js/utils/modals.js') }}"></script>
+    <script src=" {{ url_for('static', filename='js/utils/colorFilter.js') }}"></script>
     <script src="{{ url_for('static', filename='js/report_view/report_view.js') }}"></script>
 </head>
 <body>
@@ -63,9 +64,17 @@
     <tbody id='correlation_table_content'></tbody>
 </table>
 
-<h3 class='table_header' name='correlation_pleiades'>Корреляционные плеяды</h3>
-<button id='show_correlation_pleiades_button' class='display_button'>Показать диаграмму</button>
-<canvas id='correlation_pleiades_canvas'></canvas>
+<div class="correlation">
+    <div class="table_header" id="correlation_pleiades">Корреляционные плеяды</div>
+        <div class="correlation__btn-wrap">
+            <button class="correlation__btn" id="correlation_all_bindings_button" type="button">Все</button>
+            <button class="correlation__btn" id="correlation_weak_bindings_button" type="button">Слабая связь</button>
+            <button class="correlation__btn" id="correlation_average_bindings_button" type="button">Сильная связь</button>
+            <button class="correlation__btn" id="correlation_strong_bindings_button" type="button">Очень сильная связь</button>
+        </div>
+        <button id="show_correlation_pleiades_button" class="display_button">Показать диаграмму</button>
+        <canvas id="correlation_pleiades_canvas"></canvas>
+</div>
 
 <h3 class='table_header'>{{ charts_header }}</h3>
 <button id='charts_button' class='display_button'>{{ show_charts_button }}</button>

@@ -35,16 +35,19 @@ $(document).ready(function(){
                 }
 
                 if(is_correlation_table && !isNaN(value)) {
-                    if(Math.abs(value) > 0.7) {
-                        className = 'strong_binding'
-                    } else if (Math.abs(value) > 0.5) {
-                        className = 'average_binding'
-                    } else if (Math.abs(value) > 0.3) {
-                        className = 'moderate_binding'
-                    } else if (Math.abs(value) > 0.2) {
-                        className = 'weak_binding'
-                    } else {
-                        className = 'very_weak_binding'
+                    const filtersCodes = ['strong', 'average', 'moderate', 'weak', 'very_weak']
+
+                    let filters = []
+
+                    filtersCodes.forEach(filterCode => {
+                        filters.push(getFilter(filterCode))
+                    })
+
+                    for(let filter of filters) {
+                        if (filter.inRange(Math.abs(value))) {
+                            className = filter.getClassName()
+                            break
+                        }
                     }
 
                     td.classList.add(className)
@@ -224,7 +227,13 @@ $(document).ready(function(){
     }
 
 
-    async function showCorrelationPleiades() {
+    function showCorrelationPleiades(filtersCodes) {
+        let filters = []
+
+        filtersCodes.forEach(filterCode => {
+            filters.push(getFilter(filterCode))
+        })
+
         const canvas = document.getElementById('correlation_pleiades_canvas')
         const ctx = canvas.getContext('2d');
 
@@ -233,8 +242,8 @@ $(document).ready(function(){
         canvas.setAttribute('width', correlationPleiadesConfiguration.canvasWidth)
         canvas.setAttribute('height', correlationPleiadesConfiguration.canvasHeight)
 
-        const correlationData = await loadTable(null, 'correlation', false)
-        console.log(correlationData)
+        ctx.fillStyle = 'white'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
 
         const centerPoint = {
                 x: correlationPleiadesConfiguration.canvasWidth / 2,
@@ -283,18 +292,17 @@ $(document).ready(function(){
                             ctx.moveTo(point.x, point.y)
                             ctx.lineTo(anotherPoint.x, anotherPoint.y)
 
-                            if (Math.abs(data) > 0.7) {
-                                ctx.strokeStyle = 'blue'
-                            } else if (Math.abs(data) > 0.5) {
-                                ctx.strokeStyle = '#006600'
-                            } else if (Math.abs(data) > 0.3) {
-                                ctx.strokeStyle = '#00cc00'
-                            } else if (Math.abs(data) > 0.2) {
-                                ctx.strokeStyle = '#cc0000'
-                            } else {
-                                ctx.strokeStyle = '#800000'
+                            let strokeColor = 'white'
+
+                            for(let filter of filters) {
+                                if (filter.inRange(Math.abs(data))) {
+                                    console.log(filter.getName(), Math.abs(data))
+                                    strokeColor = filter.getColor()
+                                    break
+                                }
                             }
 
+                            ctx.strokeStyle = strokeColor
                             ctx.stroke()
 
                             i += 1
@@ -326,7 +334,23 @@ $(document).ready(function(){
 
     $('#show_correlation_pleiades_button').click(event => {
         event.currentTarget.style.display = 'none'
-        showCorrelationPleiades()
+        showCorrelationPleiades(['strong', 'average', 'moderate', 'weak', 'very_weak'])
+    })
+
+    $("#correlation_all_bindings_button").click(event => {
+        showCorrelationPleiades(['strong', 'average', 'moderate', 'weak', 'very_weak'])
+    })
+
+    $("#correlation_weak_bindings_button").click(event => {
+        showCorrelationPleiades(['weak', 'very_weak'])
+    })
+
+    $("#correlation_average_bindings_button").click(event => {
+        showCorrelationPleiades(['average', 'moderate'])
+    })
+
+    $("#correlation_strong_bindings_button").click(event => {
+        showCorrelationPleiades(['strong'])
     })
 
 })
