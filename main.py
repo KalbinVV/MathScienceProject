@@ -58,8 +58,6 @@ def get_table():
     file_name = request.args['file']
     table_type = request.args['type']
 
-    print(file_name, table_type)
-
     if table_type == 'partial_correlation':
         covar_field_name = request.args['covar']
 

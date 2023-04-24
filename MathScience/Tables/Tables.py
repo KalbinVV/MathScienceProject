@@ -192,7 +192,7 @@ class Tables:
                 if i_column == covar or j_column == covar:
                     continue
 
-                result_dict[i_column][j_column] = float(pg.partial_corr(data=data_frame, x=i_column, y=j_column, covar=covar)['r'])
+                result_dict[i_column][j_column] = float(pg.partial_corr(data=data_frame, x=i_column, y=j_column, covar=covar)['r'].iloc[0])
 
         keys_to_remove = [covar]
 
