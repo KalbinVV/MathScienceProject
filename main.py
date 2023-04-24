@@ -4,6 +4,8 @@ from Configuration.Configuration import Configuration
 from MathScience.Tables.Tables import Tables
 from Utils.Utils import Utils
 
+import pandas as pd
+
 app = Flask(__name__, static_folder='web/static', template_folder='web/templates')
 
 app.config['MAX_CONTENT_LENGTH'] = 3 * 1024 * 1024  # 3 MegaBytes
@@ -56,6 +58,20 @@ def get_table():
     file_name = request.args['file']
     table_type = request.args['type']
 
+    print(file_name, table_type)
+
+    if table_type == 'partial_correlation':
+        covar_field_name = request.args['covar']
+
+        data = Tables.get_partial_correlation_table(file_name, covar_field_name)
+
+        try:
+            return {'status': True, 'data': Utils.convert_dataframe_to_dict(data),
+                    'covar': covar_field_name}
+        except (Exception,) as e:
+            return {'status': False, 'reason': str(e)}
+
+
     try:
         data = Utils.convert_dataframe_to_dict({
             'source': Tables.get_source_table,
@@ -81,6 +97,15 @@ def get_intervals():
     except (Exception, ) as e:
         return {'status': False, 'reason': str(e)}
 
+
+@app.route('/get_columns', methods=['GET'])
+def get_columns():
+    file_name = request.args['file']
+
+    try:
+        return {'status': True, 'data': list(Tables.get_source_table(file_name).columns)}
+    except (Exception, ) as e:
+        return {'status': False, 'reason': str(e)}
 
 def main():
     app.run()

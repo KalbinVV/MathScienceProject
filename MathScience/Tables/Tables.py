@@ -10,6 +10,8 @@ from Configuration.Configuration import Configuration
 from Utils.FloatRange import FloatRange
 from Utils.Utils import Utils
 
+import pingouin as pg
+
 
 class Tables:
     @staticmethod
@@ -162,3 +164,47 @@ class Tables:
         correlation_data_frame.insert(0, " ", correlation_data_frame.columns)
 
         return correlation_data_frame
+
+    @classmethod
+    @lru_cache
+    def get_partial_correlation_table(cls, file_name: str, covar: str):
+        data_frame: pd.DataFrame = cls.get_source_table(file_name)
+
+        result_dict = {}
+
+        for column in data_frame.columns:
+            result_dict[column] = dict()
+
+        array = list()
+
+        for i_column in data_frame.columns:
+            for j_column in data_frame.columns:
+                if is_string_dtype(data_frame[i_column]):
+                    continue
+
+                if is_string_dtype(data_frame[j_column]):
+                    continue
+
+                if i_column == j_column:
+                    result_dict[i_column][j_column] = 1
+                    continue
+
+                if i_column == covar or j_column == covar:
+                    continue
+
+                result_dict[i_column][j_column] = float(pg.partial_corr(data=data_frame, x=i_column, y=j_column, covar=covar)['r'])
+
+        keys_to_remove = [covar]
+
+        for key in result_dict:
+            if not result_dict[key]:
+                keys_to_remove.append(key)
+
+        for key in keys_to_remove:
+            del result_dict[key]
+
+        result_data_frame = pd.DataFrame(result_dict).fillna(1)
+
+        result_data_frame.insert(0, " ", result_data_frame.columns)
+
+        return result_data_frame

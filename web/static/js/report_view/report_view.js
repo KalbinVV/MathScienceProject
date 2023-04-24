@@ -10,6 +10,8 @@ $(document).ready(function(){
     function renderTable(tableContentSelector, data, is_correlation_table=false) {
         const tableContent = document.querySelector(tableContentSelector)
 
+        tableContent.innerHTML = ''
+
         const thRow = document.createElement('tr')
 
         data.columns.forEach(column => {
@@ -61,15 +63,17 @@ $(document).ready(function(){
         }
     }
 
+    let covarValue = null
+
     function loadTable(tableSelector, tableType, shouldRender = true) {
         $.ajax({
             url: '/get_table',
             method: 'get',
-            data: {file: FILE_NAME, type: tableType},
+            data: {file: FILE_NAME, type: tableType, covar: covarValue},
             success: function(response) {
                 if (response.status == true) {
                     if(shouldRender) {
-                        renderTable(tableSelector, response.data, tableType == 'correlation' ? true : false)
+                        renderTable(tableSelector, response.data, tableType == 'correlation' || tableType == 'partial_correlation' ? true : false)
                     }
 
                     return response.data
@@ -179,6 +183,31 @@ $(document).ready(function(){
         })
     }
 
+    function loadAvailableColumns() {
+        const selectList = document.querySelector('#available_columns')
+
+        selectList.onchange = (event) => {
+            covarValue = event.target.value
+        }
+
+        $.ajax({
+            url: '/get_columns',
+            data: {file: FILE_NAME},
+            success: function(response) {
+                const options = response.data
+
+                options.forEach(option => {
+                    const optionElement = document.createElement('option')
+                    optionElement.innerHTML = option
+                    selectList.appendChild(optionElement)
+                })
+            }
+        })
+
+    }
+
+    loadAvailableColumns()
+
     $('#source_table_button').click(event => {
         event.currentTarget.style.display = 'none'
         loadTable('#source_table_content', 'source')
@@ -202,6 +231,10 @@ $(document).ready(function(){
     $('#correlation_table_button').click(event => {
         event.currentTarget.style.display = 'none'
         loadTable('#correlation_table_content', 'correlation')
+    })
+
+    $('#partial_correlation_table_button').click(event => {
+        loadTable('#partial_correlation_table_content', 'partial_correlation')
     })
 
     $('#charts_button').click(event => {

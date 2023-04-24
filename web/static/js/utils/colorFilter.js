@@ -1,7 +1,7 @@
 function makeFilter(minValue, maxValue, className, color, name) {
     return {
         inRange: function(currentValue) {
-            return true ? currentValue > minValue && currentValue < maxValue : false
+            return true ? currentValue > minValue && currentValue <= maxValue : false
         },
 
         getClassName: function() {
