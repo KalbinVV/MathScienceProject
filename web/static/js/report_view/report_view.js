@@ -206,7 +206,7 @@ $(document).ready(function(){
 
     }
 
-    loadAvailableColumns()
+    //loadAvailableColumns()
 
     $('#source_table_button').click(event => {
         event.currentTarget.style.display = 'none'
@@ -234,6 +234,7 @@ $(document).ready(function(){
     })
 
     $('#partial_correlation_table_button').click(event => {
+        event.currentTarget.style.display = 'none'
         loadTable('#partial_correlation_table_content', 'partial_correlation')
     })
 

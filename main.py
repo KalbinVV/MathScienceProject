@@ -69,7 +69,6 @@ def get_table():
         except (Exception,) as e:
             return {'status': False, 'reason': str(e)}
 
-
     try:
         data = Utils.convert_dataframe_to_dict({
             'source': Tables.get_source_table,
@@ -104,6 +103,7 @@ def get_columns():
         return {'status': True, 'data': list(Tables.get_source_table(file_name).columns)}
     except (Exception, ) as e:
         return {'status': False, 'reason': str(e)}
+
 
 def main():
     app.run()
