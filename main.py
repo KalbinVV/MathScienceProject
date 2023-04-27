@@ -59,13 +59,10 @@ def get_table():
     table_type = request.args['type']
 
     if table_type == 'partial_correlation':
-        covar_field_name = request.args['covar']
-
-        data = Tables.get_partial_correlation_table(file_name, covar_field_name)
+        data = Tables.get_partial_correlation_table(file_name)
 
         try:
-            return {'status': True, 'data': Utils.convert_dataframe_to_dict(data),
-                    'covar': covar_field_name}
+            return {'status': True, 'data': Utils.convert_dataframe_to_dict(data)}
         except (Exception,) as e:
             return {'status': False, 'reason': str(e)}
 

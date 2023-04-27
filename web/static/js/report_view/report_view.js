@@ -284,10 +284,12 @@ $(document).ready(function(){
                 y: correlationPleiadesConfiguration.canvasHeight / 2
         }
 
+        const tableType = $('#correlation_pleaid_type').val()
+
         $.ajax({
             url: '/get_table',
             method: 'get',
-            data: {file: FILE_NAME, type: 'correlation'},
+            data: {file: FILE_NAME, type: tableType},
             success: function(response) {
                 if (response.status == true) {
                     const correlationData = response.data
@@ -330,7 +332,6 @@ $(document).ready(function(){
 
                             for(let filter of filters) {
                                 if (filter.inRange(Math.abs(data))) {
-                                    console.log(filter.getName(), Math.abs(data))
                                     strokeColor = filter.getColor()
                                     break
                                 }

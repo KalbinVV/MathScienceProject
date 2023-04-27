@@ -167,7 +167,7 @@ class Tables:
 
     @classmethod
     @lru_cache
-    def get_partial_correlation_table(cls, file_name: str, covar: str):
+    def get_partial_correlation_table(cls, file_name: str):
         data_frame: pd.DataFrame = cls.get_source_table(file_name)
 
         result_dict = {}
@@ -187,9 +187,6 @@ class Tables:
 
                 if i_column == j_column:
                     result_dict[i_column][j_column] = 1
-                    continue
-
-                if i_column == covar or j_column == covar:
                     continue
 
                 columns = list(data_frame.columns)
