@@ -1,3 +1,4 @@
+import math
 import statistics
 from functools import lru_cache
 
@@ -219,3 +220,24 @@ class Tables:
         result_data_frame.insert(0, " ", result_data_frame.columns)
 
         return result_data_frame
+
+    @classmethod
+    @lru_cache
+    def get_student_table(cls, file_name: str):
+        correlation = cls.get_correlation_table(file_name).to_dict()
+
+        n = 12
+        l = 6
+
+        for i in correlation.keys():
+            for j in correlation[i].keys():
+                if isinstance(correlation[i][j], str):
+                    continue
+
+                try:
+                    correlation[i][j] = (correlation[i][j] / ((1 - (correlation[i][j] ** 2)) ** 0.5)) * ((n - l - 2) ** 0.5)
+                except (Exception, ):
+                    correlation[i][j] = '-'
+
+        return pd.DataFrame(correlation)
+

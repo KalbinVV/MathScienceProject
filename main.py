@@ -72,7 +72,8 @@ def get_table():
             'normalized': Tables.get_normalized_table,
             'statistic': Tables.get_statistic_table,
             'chi_square': Tables.get_chi_square_table,
-            'correlation': Tables.get_correlation_table
+            'correlation': Tables.get_correlation_table,
+            'student': Tables.get_student_table
         }[table_type](file_name))
 
         return {'status': True, 'data': data}

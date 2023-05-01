@@ -31,6 +31,8 @@
     <li><a href='#statistic_table'>{{ statistic_table_header }}</a></li>
     <li><a href='#chi_square_table'>{{ pearson_table_header }}</a></li>
     <li><a href='#correlation_table'>{{ correlation_matrix_header }}</a></li>
+    <li><a href="#partial_correlation_table">Частная корреляция</a></li>
+    <li><a href="#student_correlation_table">Критерий Стьюдента</a></li>
 </ul>
 
 
@@ -68,6 +70,12 @@
 <button id='partial_correlation_table_button' class='display_button'>{{ show_table_button }}</button>
 <table>
     <tbody id='partial_correlation_table_content'></tbody>
+</table>
+
+<h3 class='table_header' id='student_correlation_table'>Критерий Стьюдента</h3>
+<button id='student_correlation_table_button' class='display_button'>{{ show_table_button }}</button>
+<table>
+    <tbody id='student_correlation_table_content'></tbody>
 </table>
 
 <div class="correlation">

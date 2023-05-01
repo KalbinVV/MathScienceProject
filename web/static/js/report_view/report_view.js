@@ -66,6 +66,8 @@ $(document).ready(function(){
     let covarValue = null
 
     function loadTable(tableSelector, tableType, shouldRender = true) {
+        const correlationTypes = ['correlation', 'partial_correlation']
+
         $.ajax({
             url: '/get_table',
             method: 'get',
@@ -73,7 +75,7 @@ $(document).ready(function(){
             success: function(response) {
                 if (response.status == true) {
                     if(shouldRender) {
-                        renderTable(tableSelector, response.data, tableType == 'correlation' || tableType == 'partial_correlation' ? true : false)
+                        renderTable(tableSelector, response.data, correlationTypes.includes(tableType))
                     }
 
                     return response.data
@@ -236,6 +238,11 @@ $(document).ready(function(){
     $('#partial_correlation_table_button').click(event => {
         event.currentTarget.style.display = 'none'
         loadTable('#partial_correlation_table_content', 'partial_correlation')
+    })
+
+    $('#student_correlation_table_button').click(event => {
+        event.currentTarget.style.display = 'none'
+        loadTable('#student_correlation_table_content', 'student')
     })
 
     $('#charts_button').click(event => {
