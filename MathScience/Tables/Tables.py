@@ -1,4 +1,3 @@
-import math
 import statistics
 from functools import lru_cache
 
@@ -10,6 +9,7 @@ from scipy.stats import poisson, chisquare
 from Configuration.Configuration import Configuration
 from Utils.FloatRange import FloatRange
 from Utils.Utils import Utils
+from MathScience.Statistics import get_sample_size
 
 import pingouin as pg
 
@@ -41,43 +41,41 @@ class Tables:
 
         configuration = Configuration.language['statistic_table']
 
-        array_of_fields = ['name', 'mode', 'median', 'dispersion', 'arithmetical_mean',
-                           'standard_deviation', 'expected_value', 'geometric_mean', 'excess',
-                           'asymmetry', 'average_sampling_error', 'marginal_sampling_error', 'sample_size']
+        # TODO: Change lambdas to functions
+        required_fields_mapping = {
+            # 'name': (function, fallback_value)
+            'mode': (statistics.mode, 0),
+            'median': (statistics.median, 0),
+            'dispersion': (statistics.variance, 0),
+            'arithmetical_mean': (statistics.mean, 0),
+            'geometric_mean': (statistics.geometric_mean, 0),
+            'average_sampling_error': (lambda x: (statistics.variance(x) / 15 * (1 - 15 / 100)) ** 0.5, 0),
+            'marginal_sampling_error': (lambda x: 2 * ((statistics.variance(x) / 15 * (1 - 15 / 100)) ** 0.5), 0),
+            'sample_size': (get_sample_size, 0),
+            'excess': (scipy.stats.kurtosis, 0),
+            'asymmetry': (scipy.stats.skew, 0)
+        }
 
         characteristic_dictionary = dict()
 
-        for field in array_of_fields:
-            characteristic_dictionary[configuration[field]] = list()
+        characteristic_dictionary[configuration['name']] = list()
+
+        for key in required_fields_mapping:
+            characteristic_dictionary[configuration[key]] = list()
 
         for column in data_frame.columns:
             if is_string_dtype(data_frame[column]):
                 continue
 
             characteristic_dictionary[configuration['name']].append(column)
-            characteristic_dictionary[configuration['mode']].append(statistics.mode(data_frame[column]))
-            characteristic_dictionary[configuration['median']].append(statistics.median(data_frame[column]))
-            characteristic_dictionary[configuration['dispersion']].append(statistics.variance(data_frame[column]))
-            characteristic_dictionary[configuration['arithmetical_mean']].append(statistics.mean(data_frame[column]))
-            characteristic_dictionary[configuration['standard_deviation']].append(statistics.stdev(data_frame[column]))
-            characteristic_dictionary[configuration['expected_value']].append(statistics.mean(data_frame[column]))
 
-            try:
-                characteristic_dictionary[configuration['geometric_mean']].append(statistics.geometric_mean(data_frame[column]))
-            except (Exception,):
-                characteristic_dictionary[configuration['geometric_mean']].append(0)
+            for key, mapping in required_fields_mapping.items():
+                function, fallback_value = mapping
 
-            characteristic_dictionary[configuration['average_sampling_error']].append(
-                ((statistics.variance(data_frame[column])) / 15 * (1 - 15 / 100)) ** 0.5)
-            characteristic_dictionary[configuration['marginal_sampling_error']].append(
-                2 * (((statistics.variance(data_frame[column])) / 15 * (1 - 15 / 100)) ** 0.5))
-            characteristic_dictionary[configuration['sample_size']].append(
-                (2 * 2 * statistics.variance(data_frame[column]) * 100) / (
-                        2 * 2 * statistics.variance(data_frame[column]) + (
-                        2 * (((statistics.variance(data_frame[column])) / 15 * (1 - 15 / 100)) ** 0.5)) ** 2 * 100))
-
-            characteristic_dictionary[configuration['excess']].append(scipy.stats.kurtosis(data_frame[column]))
-            characteristic_dictionary[configuration['asymmetry']].append(scipy.stats.skew(data_frame[column]))
+                try:
+                    characteristic_dictionary[configuration[key]].append(function(data_frame[column]))
+                except (Exception, ):
+                    characteristic_dictionary[configuration[key]].append(fallback_value)
 
         return pd.DataFrame(characteristic_dictionary)
 
