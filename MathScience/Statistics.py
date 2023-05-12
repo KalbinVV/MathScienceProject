@@ -6,3 +6,11 @@ def get_sample_size(x: pd.DataFrame) -> float:
     return (2 * 2 * statistics.variance(x) * 100) / (
             2 * 2 * statistics.variance(x) + (
             2 * (((statistics.variance(x)) / 15 * (1 - 15 / 100)) ** 0.5)) ** 2 * 100)
+
+
+def kurtosis(x: pd.DataFrame) -> float:
+    return x.kurtosis()
+
+
+def asymmetry(x: pd.DataFrame) -> float:
+    return x.skew()

@@ -2,14 +2,13 @@ import statistics
 from functools import lru_cache
 
 import pandas as pd
-import scipy
 from pandas.core.dtypes.common import is_string_dtype
-from scipy.stats import poisson, chisquare
+from scipy.stats import chisquare
 
 from Configuration.Configuration import Configuration
 from Utils.FloatRange import FloatRange
 from Utils.Utils import Utils
-from MathScience.Statistics import get_sample_size
+from MathScience.Statistics import get_sample_size, asymmetry, kurtosis
 
 import pingouin as pg
 
@@ -52,8 +51,8 @@ class Tables:
             'average_sampling_error': (lambda x: (statistics.variance(x) / 15 * (1 - 15 / 100)) ** 0.5, 0),
             'marginal_sampling_error': (lambda x: 2 * ((statistics.variance(x) / 15 * (1 - 15 / 100)) ** 0.5), 0),
             'sample_size': (get_sample_size, 0),
-            'excess': (scipy.stats.kurtosis, 0),
-            'asymmetry': (scipy.stats.skew, 0)
+            'excess': (kurtosis, 0),
+            'asymmetry': (asymmetry, 0)
         }
 
         characteristic_dictionary = dict()

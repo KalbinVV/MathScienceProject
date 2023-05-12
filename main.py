@@ -94,12 +94,12 @@ def main():
     # 2 s timeout
     timeout_wrapper = create_timeout_wrapper(timeout=2)
 
-    app.add_url_rule('/', view_func=anti_ddos_wrapper(index), methods=['GET'])
-    app.add_url_rule('/reports/<file_name>', view_func=anti_ddos_wrapper(report_view), methods=['GET'])
+    app.add_url_rule('/', 'index', anti_ddos_wrapper(index), methods=['GET'])
+    app.add_url_rule('/reports/<file_name>', 'report_view', anti_ddos_wrapper(report_view), methods=['GET'])
 
-    app.add_url_rule('/upload_report', view_func=anti_ddos_wrapper(requests.upload_report), methods=['POST'])
-    app.add_url_rule('/get_table', view_func=anti_ddos_wrapper(requests.get_table), methods=['GET'])
-    app.add_url_rule('/get_intervals', view_func=anti_ddos_wrapper(requests.get_intervals), methods=['GET'])
+    app.add_url_rule('/upload_report', 'upload_report', anti_ddos_wrapper(requests.upload_report), methods=['POST'])
+    app.add_url_rule('/get_table', 'get_table', anti_ddos_wrapper(requests.get_table), methods=['GET'])
+    app.add_url_rule('/get_intervals', 'get_intervals' , anti_ddos_wrapper(requests.get_intervals), methods=['GET'])
 
     app.run()
 
