@@ -10,9 +10,9 @@ def upload_report():
     try:
         file_name = Utils.save_file(file)
     except (Exception, ) as e:
-        return {'status': False, 'reason': str(e)}
+        return Utils.generate_error_response(str(e))
 
-    return {'status': True, 'href': file_name}
+    return Utils.generate_successful_response(href=file_name)
 
 
 def get_table():
@@ -30,9 +30,9 @@ def get_table():
             'partial_correlation': Tables.get_partial_correlation_table
         }[table_type](file_name))
 
-        return {'status': True, 'data': data}
+        return Utils.generate_successful_response(data=data)
     except (Exception, ) as e:
-        return {'status': False, 'reason': str(e)}
+        return Utils.generate_error_response(str(e))
 
 
 def get_intervals():
@@ -41,6 +41,6 @@ def get_intervals():
     try:
         data = Utils.get_charts_data(file_name)
 
-        return {'status': True, 'data': data}
+        return Utils.generate_successful_response(data=data)
     except (Exception, ) as e:
-        return {'status': False, 'reason': str(e)}
+        return Utils.generate_error_response(str(e))

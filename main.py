@@ -1,3 +1,4 @@
+import signal
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 
@@ -5,13 +6,13 @@ from flask import Flask, render_template, request
 
 import requests
 from Configuration.Configuration import Configuration
+from Utils.Utils import Utils
 
 app = Flask(__name__, static_folder='web/static', template_folder='web/templates')
 
 app.config['MAX_CONTENT_LENGTH'] = 3 * 1024 * 1024  # 3 MegaBytes
 
 
-@app.route('/')
 def index():
     language_configuration = Configuration.language
 
@@ -21,7 +22,6 @@ def index():
                            footer=language_configuration['footer'])
 
 
-@app.route('/reports/<file_name>')
 def report_view(file_name: str):
     language_configuration = Configuration.language
 
@@ -42,7 +42,7 @@ def report_view(file_name: str):
 
 
 # Timeout in ms
-def create_timeout_wrapper(timeout: float):
+def create_anti_ddos_wrapper(timeout: int):
     dictionary_of_visited = dict()
 
     def wrapper(function):
@@ -56,7 +56,7 @@ def create_timeout_wrapper(timeout: float):
                 previous_time = dictionary_of_visited[ip_address]
 
                 if current_time <= previous_time + timedelta(milliseconds=timeout):
-                    return {'status': False, 'reason': 'Timeout'}
+                    return Utils.generate_error_response('AntiDDOS handler')
 
             dictionary_of_visited[ip_address] = current_time
 
@@ -67,13 +67,39 @@ def create_timeout_wrapper(timeout: float):
     return wrapper
 
 
-def main():
-    # 0.5 ms timeout
-    timeout_wrapper = create_timeout_wrapper(timeout=500)
+# Stop request if function work too long
+# Don't work (Kill main process)
+def create_timeout_wrapper(timeout: int):
+    def wrapper(function):
+        @wraps(function)
+        def wrapped_function(*args, **kwargs):
+            try:
+                signal.alarm(timeout)
+                result = function(*args, **kwargs)
+                signal.alarm(0)
 
-    app.add_url_rule('/upload_report', view_func=timeout_wrapper(requests.upload_report), methods=['POST'])
-    app.add_url_rule('/get_table', view_func=timeout_wrapper(requests.get_table), methods=['GET'])
-    app.add_url_rule('/get_intervals', view_func=timeout_wrapper(requests.get_intervals), methods=['GET'])
+                return result
+            except (Exception, ) as e:
+                return Utils.generate_error_response('Timeout handler')
+
+        return wrapped_function
+
+    return wrapper
+
+
+def main():
+    # 0.5 s timeout
+    anti_ddos_wrapper = create_anti_ddos_wrapper(timeout=500)
+
+    # 2 s timeout
+    timeout_wrapper = create_timeout_wrapper(timeout=2)
+
+    app.add_url_rule('/', view_func=anti_ddos_wrapper(index), methods=['GET'])
+    app.add_url_rule('/reports/<file_name>', view_func=anti_ddos_wrapper(report_view), methods=['GET'])
+
+    app.add_url_rule('/upload_report', view_func=anti_ddos_wrapper(requests.upload_report), methods=['POST'])
+    app.add_url_rule('/get_table', view_func=anti_ddos_wrapper(requests.get_table), methods=['GET'])
+    app.add_url_rule('/get_intervals', view_func=anti_ddos_wrapper(requests.get_intervals), methods=['GET'])
 
     app.run()
 

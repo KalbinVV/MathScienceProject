@@ -113,3 +113,11 @@ class Utils:
             intervals.append([column, data_frame[column].to_numpy().tolist(), interpolated_x.tolist(), interpolated_y.tolist()])
 
         return intervals
+
+    @staticmethod
+    def generate_successful_response(**kwargs):
+        return {'status': True, **kwargs}
+
+    @staticmethod
+    def generate_error_response(message: str) -> dict:
+        return {'status': False, 'reason': message}
