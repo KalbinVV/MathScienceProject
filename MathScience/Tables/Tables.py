@@ -1,4 +1,3 @@
-import statistics
 from functools import lru_cache
 
 import pandas as pd
@@ -6,11 +5,9 @@ from pandas.core.dtypes.common import is_string_dtype
 from scipy.stats import chisquare
 
 from Configuration.Configuration import Configuration
+from MathScience import Statistics
 from Utils.FloatRange import FloatRange
 from Utils.Utils import Utils
-from MathScience.Statistics import get_sample_size, asymmetry, kurtosis
-
-import pingouin as pg
 
 
 class Tables:
@@ -43,16 +40,16 @@ class Tables:
         # TODO: Change lambdas to functions
         required_fields_mapping = {
             # 'name': (function, fallback_value)
-            'mode': (statistics.mode, 0),
-            'median': (statistics.median, 0),
-            'dispersion': (statistics.variance, 0),
-            'arithmetical_mean': (statistics.mean, 0),
-            'geometric_mean': (statistics.geometric_mean, 0),
-            'average_sampling_error': (lambda x: (statistics.variance(x) / 15 * (1 - 15 / 100)) ** 0.5, 0),
-            'marginal_sampling_error': (lambda x: 2 * ((statistics.variance(x) / 15 * (1 - 15 / 100)) ** 0.5), 0),
-            'sample_size': (get_sample_size, 0),
-            'excess': (kurtosis, 0),
-            'asymmetry': (asymmetry, 0)
+            'mode': (Statistics.mean, 0),
+            'median': (Statistics.median, 0),
+            'dispersion': (Statistics.dispersion, 0),
+            'arithmetical_mean': (Statistics.mean, 0),
+            'geometric_mean': (Statistics.geometric_mean, 0),
+            'average_sampling_error': (Statistics.average_sampling_error, 0),
+            'marginal_sampling_error': (Statistics.marginal_sampling_error, 0),
+            'sample_size': (Statistics.sample_size, 0),
+            'excess': (Statistics.kurtosis, 0),
+            'asymmetry': (Statistics.asymmetry, 0)
         }
 
         characteristic_dictionary = dict()
@@ -166,57 +163,14 @@ class Tables:
     @classmethod
     @lru_cache
     def get_partial_correlation_table(cls, file_name: str):
-        data_frame: pd.DataFrame = cls.get_source_table(file_name)
+        data_frame = cls.get_normalized_table(file_name)
 
-        result_dict = {}
+        correlation_data_frame = Statistics.partial_corr(data_frame)
 
-        for column in data_frame.columns:
-            result_dict[column] = dict()
+        # Трюк с колонкой названий
+        correlation_data_frame.insert(0, " ", correlation_data_frame.columns)
 
-        array = list()
-
-        for i_column in data_frame.columns:
-            for j_column in data_frame.columns:
-                if is_string_dtype(data_frame[i_column]):
-                    continue
-
-                if is_string_dtype(data_frame[j_column]):
-                    continue
-
-                if i_column == j_column:
-                    result_dict[i_column][j_column] = 1
-                    continue
-
-                columns = list(data_frame.columns)
-
-                columns_to_remove = list()
-
-                for column in data_frame.columns:
-                    if is_string_dtype(data_frame[column]):
-                        columns_to_remove.append(column)
-
-                for column in columns_to_remove:
-                    columns.remove(column)
-
-                columns.remove(i_column)
-                columns.remove(j_column)
-
-                result_dict[i_column][j_column] = float(pg.partial_corr(data=data_frame, x=i_column, y=j_column, covar=columns)['r'].iloc[0])
-
-        keys_to_remove = list()
-
-        for key in result_dict:
-            if not result_dict[key]:
-                keys_to_remove.append(key)
-
-        for key in keys_to_remove:
-            del result_dict[key]
-
-        result_data_frame = pd.DataFrame(result_dict).fillna(1)
-
-        result_data_frame.insert(0, " ", result_data_frame.columns)
-
-        return result_data_frame
+        return correlation_data_frame
 
     @classmethod
     @lru_cache

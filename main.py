@@ -67,32 +67,9 @@ def create_anti_ddos_wrapper(timeout: int):
     return wrapper
 
 
-# Stop request if function work too long
-# Don't work (Kill main process)
-def create_timeout_wrapper(timeout: int):
-    def wrapper(function):
-        @wraps(function)
-        def wrapped_function(*args, **kwargs):
-            try:
-                signal.alarm(timeout)
-                result = function(*args, **kwargs)
-                signal.alarm(0)
-
-                return result
-            except (Exception, ) as e:
-                return Utils.generate_error_response('Timeout handler')
-
-        return wrapped_function
-
-    return wrapper
-
-
 def main():
     # 0.5 s timeout
     anti_ddos_wrapper = create_anti_ddos_wrapper(timeout=500)
-
-    # 2 s timeout
-    timeout_wrapper = create_timeout_wrapper(timeout=2)
 
     app.add_url_rule('/', 'index', anti_ddos_wrapper(index), methods=['GET'])
     app.add_url_rule('/reports/<file_name>', 'report_view', anti_ddos_wrapper(report_view), methods=['GET'])
