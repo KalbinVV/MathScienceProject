@@ -403,7 +403,7 @@ $(document).ready(function(){
         const y_column = 'Количество циклов'
 
         $.ajax({
-            url: '/get_linear_regression_coefficients',
+            url: '/get_linear_regression_coefficients_matrix',
             type: 'GET',
             data: {file: FILE_NAME, y: y_column},
             success: function(response) {
@@ -412,6 +412,32 @@ $(document).ready(function(){
                 renderTable('#linear_regression_coefficients_table_content', response.data, false)
             }
         })
+
+        setTimeout(() => {
+            $.ajax({
+                url: '/get_linear_regression_coefficients',
+                type: 'GET',
+                data: {file: FILE_NAME, y: y_column},
+                success: function(response) {
+                    console.log(response)
+
+                    const array_of_values = response.data
+
+                    var equationValue = 'y = '
+
+                    for(let i = 0; i < array_of_values.length; i++) {
+                        equationValue += `(${array_of_values[i].toFixed(2)})x${i+1}`
+
+                        if (i + 1 != array_of_values.length) {
+                            equationValue += ' + '
+                        }
+                    }
+
+                    $('#linear_regression_equation').html(equationValue)
+                }
+            })
+        }, 1000)
+
     })
 
     // TODO: Add multiple types support

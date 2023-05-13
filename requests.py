@@ -1,6 +1,7 @@
 import pandas as pd
 from flask import request
 from pandas.core.dtypes.common import is_string_dtype
+from sklearn import linear_model
 
 from MathScience import Statistics
 from MathScience.Tables.Tables import Tables
@@ -49,7 +50,7 @@ def get_intervals():
         return Helpers.generate_error_response(str(e))
 
 
-def get_linear_regression_coefficients():
+def get_linear_regression_coefficients_matrix():
     file_name = request.args['file']
     y_column = request.args['y']
 
@@ -63,7 +64,30 @@ def get_linear_regression_coefficients():
         return Helpers.generate_error_response(str(e))
 
 
-def get_linear_regression_student_coefficients():
+def get_linear_regression_coefficients():
+    file_name = request.args['file']
+    y = request.args['y']
+
+    data_frame = Tables.get_normalized_table(file_name)
+
+    incorrect_columns = list()
+
+    for column in data_frame.columns:
+        if is_string_dtype(data_frame[column]):
+            incorrect_columns.append(column)
+
+    data_frame = data_frame.drop(labels=incorrect_columns, axis=1)
+
+    y_data_frame = data_frame[y]
+    x_data_frame = data_frame.drop(labels=y, axis=1)
+
+    regression = linear_model.LinearRegression()
+    regression.fit(x_data_frame, y_data_frame)
+
+    return Helpers.generate_successful_response(data=regression.coef_.tolist())
+
+
+def get_regression_student_coefficients_matrix():
     file_name = request.args['file']
     y_column = request.args['y']
 
