@@ -47,8 +47,6 @@ def partial_corr(data_frame: pd.DataFrame) -> pd.DataFrame:
         for j_index, j_column in enumerate(data_frame.columns):
             correlation_dictionary[i_column][j_column] = correlation_array[i_index, j_index]
 
-    print(correlation_dictionary)
-
     return pd.DataFrame(correlation_dictionary)
 
 

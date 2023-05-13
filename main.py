@@ -1,4 +1,3 @@
-import signal
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 

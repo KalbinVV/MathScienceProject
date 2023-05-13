@@ -17,7 +17,6 @@ class Tables:
         return Utils.load_file(file_name)
 
     @classmethod
-    @lru_cache
     def get_normalized_table(cls, file_name: str) -> pd.DataFrame:
         data_frame = Utils.load_file(file_name)
 
@@ -31,7 +30,6 @@ class Tables:
         return data_frame
 
     @classmethod
-    @lru_cache
     def get_statistic_table(cls, file_name: str) -> pd.DataFrame:
         data_frame = pd.DataFrame(cls.get_normalized_table(file_name))
 
@@ -77,7 +75,6 @@ class Tables:
 
     # TODO: Add support for all table types
     @classmethod
-    @lru_cache
     def get_chi_square_table(cls, file_name: str) -> pd.DataFrame:
         amount_of_intervals = 5
         significance = 0.05
@@ -143,7 +140,6 @@ class Tables:
         return pd.DataFrame(chi_square_dictionary)
 
     @classmethod
-    @lru_cache
     def get_correlation_table(cls, file_name: str) -> pd.DataFrame:
         data_frame = cls.get_normalized_table(file_name)
 
@@ -161,7 +157,6 @@ class Tables:
         return correlation_data_frame
 
     @classmethod
-    @lru_cache
     def get_partial_correlation_table(cls, file_name: str):
         data_frame = cls.get_normalized_table(file_name)
 
@@ -173,7 +168,6 @@ class Tables:
         return correlation_data_frame
 
     @classmethod
-    @lru_cache
     def get_student_table(cls, file_name: str):
         correlation = cls.get_correlation_table(file_name).to_dict()
 
