@@ -7,19 +7,18 @@ from sklearn import linear_model
 
 from Configuration.Configuration import Configuration
 from MathScience import Statistics
+from Utils import Helpers
 from Utils.FloatRange import FloatRange
-from Utils.Utils import Utils
-
 
 class Tables:
     @staticmethod
     @lru_cache
     def get_source_table(file_name: str) -> pd.DataFrame:
-        return Utils.load_file(file_name)
+        return Helpers.load_file(file_name)
 
     @classmethod
     def get_normalized_table(cls, file_name: str) -> pd.DataFrame:
-        data_frame = Utils.load_file(file_name)
+        data_frame = Helpers.load_file(file_name)
 
         for column in data_frame.columns:
             if is_string_dtype(data_frame[column]):

@@ -5,7 +5,7 @@ from flask import Flask, render_template, request
 
 import requests
 from Configuration.Configuration import Configuration
-from Utils.Utils import Utils
+from Utils import Helpers
 
 app = Flask(__name__, static_folder='web/static', template_folder='web/templates')
 
@@ -55,7 +55,7 @@ def create_anti_ddos_wrapper(timeout: int):
                 previous_time = dictionary_of_visited[ip_address]
 
                 if current_time <= previous_time + timedelta(milliseconds=timeout):
-                    return Utils.generate_error_response('AntiDDOS handler')
+                    return Helpers.generate_error_response('AntiDDOS handler')
 
             dictionary_of_visited[ip_address] = current_time
 
