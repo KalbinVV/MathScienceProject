@@ -75,13 +75,11 @@ class Tables:
 
         return pd.DataFrame(characteristic_dictionary)
 
-    # TODO: Add support for all table types
     @classmethod
     def get_chi_square_table(cls, file_name: str) -> pd.DataFrame:
         amount_of_intervals = 5
         significance = 0.05
 
-        key_field = 'Название'
         critical_value = 3.33
 
         chi_square_dictionary = {
@@ -99,6 +97,8 @@ class Tables:
         }
 
         data_frame = Tables.get_normalized_table(file_name)
+
+        key_field = data_frame.columns.tolist()[0]
 
         for column in data_frame.columns:
             if is_string_dtype(data_frame[column]):
