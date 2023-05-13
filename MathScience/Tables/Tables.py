@@ -3,6 +3,7 @@ from functools import lru_cache
 import pandas as pd
 from pandas.core.dtypes.common import is_string_dtype
 from scipy.stats import chisquare
+from sklearn import linear_model
 
 from Configuration.Configuration import Configuration
 from MathScience import Statistics
@@ -39,6 +40,7 @@ class Tables:
         required_fields_mapping = {
             # 'name': (function, fallback_value)
             'mode': (Statistics.mean, 0),
+            'standard_deviation': (Statistics.standard_deviation, 0),
             'median': (Statistics.median, 0),
             'dispersion': (Statistics.dispersion, 0),
             'arithmetical_mean': (Statistics.mean, 0),
@@ -185,4 +187,31 @@ class Tables:
                     correlation[i][j] = '-'
 
         return pd.DataFrame(correlation)
+
+    @classmethod
+    def get_linear_regression_coefficients(cls, file_name: str, y: str) -> pd.DataFrame:
+        data_frame = cls.get_normalized_table(file_name)
+
+        incorrect_columns = list()
+
+        for column in data_frame.columns:
+            if is_string_dtype(data_frame[column]):
+                incorrect_columns.append(column)
+
+        data_frame = data_frame.drop(labels=incorrect_columns, axis=1)
+
+        y_data_frame = data_frame[y]
+        x_data_frame = data_frame.drop(labels=y, axis=1)
+
+        regression = linear_model.LinearRegression()
+        regression.fit(x_data_frame, y_data_frame)
+
+        response_dictionary = {
+            'Параметр': ['b' + str(i) for i in range(len(regression.coef_))],
+            'Значение': regression.coef_.tolist()
+        }
+
+        response_data_frame = pd.DataFrame(response_dictionary)
+
+        return response_data_frame
 

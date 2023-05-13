@@ -395,4 +395,40 @@ $(document).ready(function(){
         showCorrelationPleiades(['strong'])
     })
 
+
+    // TODO: Add multiple types support
+    $('#linear_regression_coefficients_table_button').click(event => {
+        event.currentTarget.style.display = 'none'
+
+        const y_column = 'Количество циклов'
+
+        $.ajax({
+            url: '/get_linear_regression_coefficients',
+            type: 'GET',
+            data: {file: FILE_NAME, y: y_column},
+            success: function(response) {
+                console.log(response)
+
+                renderTable('#linear_regression_coefficients_table_content', response.data, false)
+            }
+        })
+    })
+
+    // TODO: Add multiple types support
+    $('#linear_regression_student_table_button').click(event => {
+        event.currentTarget.style.display = 'none'
+
+        const y_column = 'Количество циклов'
+
+        $.ajax({
+            url: '/get_linear_regression_student_coefficients',
+            type: 'GET',
+            data: {file: FILE_NAME, y: y_column},
+            success: function(response) {
+                console.log(response)
+
+                renderTable('#linear_regression_student_table_content', response.data, false)
+            }
+        })
+    })
 })

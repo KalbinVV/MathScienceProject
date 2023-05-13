@@ -73,9 +73,21 @@ def main():
     app.add_url_rule('/', 'index', anti_ddos_wrapper(index), methods=['GET'])
     app.add_url_rule('/reports/<file_name>', 'report_view', anti_ddos_wrapper(report_view), methods=['GET'])
 
-    app.add_url_rule('/upload_report', 'upload_report', anti_ddos_wrapper(requests.upload_report), methods=['POST'])
-    app.add_url_rule('/get_table', 'get_table', anti_ddos_wrapper(requests.get_table), methods=['GET'])
-    app.add_url_rule('/get_intervals', 'get_intervals' , anti_ddos_wrapper(requests.get_intervals), methods=['GET'])
+    requests_dictionary = {
+        # path:  (function, available_methods)
+        '/upload_report': (requests.upload_report, ['POST']),
+        '/get_table': (requests.get_table, ['GET']),
+        '/get_intervals': (requests.get_intervals, ['GET']),
+        '/get_linear_regression_coefficients': (requests.get_linear_regression_coefficients, ['GET']),
+        '/get_linear_regression_student_coefficients': (requests.get_linear_regression_student_coefficients, ['GET'])
+    }
+
+    for key, tpl in requests_dictionary.items():
+        function, available_methods = tpl
+
+        request_name = key[1:]
+
+        app.add_url_rule(key, request_name, anti_ddos_wrapper(function), methods=available_methods)
 
     app.run()
 

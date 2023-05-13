@@ -70,6 +70,10 @@ def mode(values: pd.DataFrame) -> float:
     return item
 
 
+def standard_deviation(values: pd.DataFrame) -> float:
+    return values.std()
+
+
 def dispersion(values: pd.DataFrame) -> float:
     return values.var()
 
