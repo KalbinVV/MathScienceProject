@@ -10,6 +10,7 @@ from MathScience import Statistics
 from Utils import Helpers
 from Utils.FloatRange import FloatRange
 
+
 class Tables:
     @staticmethod
     @lru_cache
