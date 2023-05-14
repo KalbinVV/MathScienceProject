@@ -3,8 +3,7 @@ from flask import request
 from pandas.core.dtypes.common import is_string_dtype
 from sklearn import linear_model
 
-from MathScience import Statistics
-from MathScience.Tables.Tables import Tables
+from MathScience import Statistics, Tables
 from Utils import Helpers
 
 
