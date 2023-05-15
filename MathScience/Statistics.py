@@ -95,9 +95,11 @@ def mean(values: pd.DataFrame) -> float:
 
 
 def sample_size(values: pd.DataFrame) -> float:
-    return (2 * 2 * dispersion(values) * 100) / (
-            2 * 2 * dispersion(values) + (
-            2 * (((dispersion(values)) / 15 * (1 - 15 / 100)) ** 0.5)) ** 2 * 100)
+    variance_value = dispersion(values)
+    delta = (0.5 * (((variance_value / 12) * (1 - 12 / 100)) ** 0.5))
+    test = ((variance_value * 0.25) / round(delta, 2) / round(delta, 2))
+
+    return round(test)
 
 
 def average_sampling_error(values: pd.DataFrame) -> float:
