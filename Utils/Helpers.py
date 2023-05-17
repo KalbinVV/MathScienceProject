@@ -75,7 +75,7 @@ def get_file_name_data(file_name: str) -> tuple:
 
 
 def get_charts_data(file_name: str, amount_of_intervals: int = 5) -> list:
-    from MathScience.Tables import Tables
+    from MathScience import Tables
     data_frame = Tables.get_normalized_table(file_name)
 
     intervals = []

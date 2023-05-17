@@ -408,6 +408,24 @@ $(document).ready(function(){
         showCorrelationPleiades(['strong'])
     })
 
+    $('#linear_regression_fault_table_button').click(event => {
+        event.currentTarget.style.display = 'none'
+
+        const y_column = 'Количество циклов'
+
+        $.ajax({
+            url: '/get_regression_fault',
+            type: 'GET',
+            data: {file: FILE_NAME, y: y_column},
+            success: function(response) {
+                console.log(response)
+
+                renderTable('#linear_regression_fault_table_content', response.data, false)
+            }
+        })
+
+    })
+
 
     // TODO: Add multiple types support
     $('#linear_regression_coefficients_table_button').click(event => {
@@ -439,8 +457,8 @@ $(document).ready(function(){
 
                     var equationValue = 'y = '
 
-                    for(let i = 0; i < array_of_values.length; i++) {
-                        equationValue += `(${array_of_values[i].toFixed(2)})x${i+1}`
+                    for(let i = 1; i < array_of_values.length; i++) {
+                        equationValue += `(${array_of_values[i].toFixed(2)})x${i}`
 
                         if (i + 1 != array_of_values.length) {
                             equationValue += ' + '

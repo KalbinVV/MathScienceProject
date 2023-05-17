@@ -170,7 +170,7 @@ def get_partial_correlation_table(file_name: str):
 def get_student_table(file_name: str):
     correlation = get_correlation_table(file_name).to_dict()
 
-    n = 12
+    n = 9
     l = 6
 
     for i in correlation.keys():
@@ -189,7 +189,7 @@ def get_student_table(file_name: str):
 def get_partial_student_table(file_name: str):
     correlation = get_partial_correlation_table(file_name).to_dict()
 
-    n = 12
+    n = 9
     l = 6
 
     for i in correlation.keys():
@@ -223,8 +223,8 @@ def get_linear_regression_coefficients(file_name: str, y: str) -> pd.DataFrame:
     regression.fit(x_data_frame, y_data_frame)
 
     response_dictionary = {
-        'Параметр': ['b' + str(i) for i in range(len(regression.coef_))],
-        'Значение': regression.coef_.tolist()
+        'Параметр': ['b' + str(i) for i in range(len(regression.coef_) + 1)],
+        'Значение': [regression.intercept_,*regression.coef_.tolist()]
     }
 
     response_data_frame = pd.DataFrame(response_dictionary)

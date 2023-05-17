@@ -85,7 +85,7 @@ def get_linear_regression_coefficients():
     regression.fit(x_data_frame, y_data_frame)
 
     return Helpers.generate_successful_response(data={
-        'coef': regression.coef_.tolist(),
+        'coef': [regression.intercept_, *regression.coef_.tolist()],
         'intercept': regression.intercept_.tolist()})
 
 
@@ -123,3 +123,46 @@ def get_regression_student_coefficients_matrix():
         return Helpers.generate_successful_response(data=response_dict)
     except (Exception,) as e:
         return Helpers.generate_error_response(str(e))
+
+
+# Not work
+def get_regression_fault():
+    file_name = request.args['file']
+    y = request.args['y']
+
+    data_frame = Tables.get_normalized_table(file_name)
+
+    incorrect_columns = list()
+
+    for column in data_frame.columns:
+        if is_string_dtype(data_frame[column]):
+            incorrect_columns.append(column)
+
+    data_frame = data_frame.drop(labels=incorrect_columns, axis=1)
+
+    y_data_frame = data_frame[y]
+    x_data_frame = data_frame.drop(labels=y, axis=1)
+
+    regression = linear_model.LinearRegression()
+    regression.fit(x_data_frame, y_data_frame)
+
+    result_dict = {'Исходное значение': [],
+                   'Полученное значение': [],
+                   'Погрешность': []}
+
+    x_data_frame = x_data_frame
+    y_data_frame = y_data_frame.values.tolist()
+
+    for i, column in enumerate(x_data_frame.columns):
+        source_value = y_data_frame[i]
+
+        result_dict['Исходное значение'].append(source_value)
+
+        predicted_value = regression.predict(x_data_frame[column])
+
+        result_dict['Полученное значение'].append(predicted_value)
+        result_dict['Погрешность'].append(abs(source_value - predicted_value))
+
+    response_data_frame = pd.DataFrame(result_dict)
+
+    return Helpers.generate_successful_response(data=Helpers.convert_dataframe_to_dict(response_data_frame))
