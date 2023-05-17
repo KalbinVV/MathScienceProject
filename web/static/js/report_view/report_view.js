@@ -7,7 +7,7 @@ $(document).ready(function(){
         pointHeight: 5
     }
 
-    function renderTable(tableContentSelector, data, is_correlation_table=false) {
+    function renderTable(tableContentSelector, data, is_correlation_table=false, is_student_table=false) {
         const tableContent = document.querySelector(tableContentSelector)
 
         tableContent.innerHTML = ''
@@ -53,6 +53,12 @@ $(document).ready(function(){
                     }
 
                     td.classList.add(className)
+                } else if (is_student_table && !isNaN(value)) {
+                    const student_crit = 1.83
+
+                    if (Math.abs(value) > 1.83) {
+                        td.classList.add('strong_binding')
+                    }
                 }
                 td.innerHTML = value
 
@@ -67,6 +73,7 @@ $(document).ready(function(){
 
     function loadTable(tableSelector, tableType, shouldRender = true) {
         const correlationTypes = ['correlation', 'partial_correlation']
+        const studentTypes = ['student', 'student_partial']
 
         $.ajax({
             url: '/get_table',
@@ -75,7 +82,8 @@ $(document).ready(function(){
             success: function(response) {
                 if (response.status == true) {
                     if(shouldRender) {
-                        renderTable(tableSelector, response.data, correlationTypes.includes(tableType))
+                        renderTable(tableSelector, response.data, correlationTypes.includes(tableType),
+                            studentTypes.includes(tableType))
                     }
 
                     return response.data
@@ -243,6 +251,11 @@ $(document).ready(function(){
     $('#student_correlation_table_button').click(event => {
         event.currentTarget.style.display = 'none'
         loadTable('#student_correlation_table_content', 'student')
+    })
+
+    $('#student_partial_correlation_table_button').click(event => {
+        event.currentTarget.style.display = 'none'
+        loadTable('#student_partial_correlation_table_content', 'student_partial')
     })
 
     $('#charts_button').click(event => {
@@ -421,7 +434,8 @@ $(document).ready(function(){
                 success: function(response) {
                     console.log(response)
 
-                    const array_of_values = response.data
+                    const array_of_values = response.data.coef
+                    const intercept = response.data.intercept
 
                     var equationValue = 'y = '
 
@@ -432,6 +446,8 @@ $(document).ready(function(){
                             equationValue += ' + '
                         }
                     }
+
+                    equationValue += ` + ${intercept}`
 
                     $('#linear_regression_equation').html(equationValue)
                 }

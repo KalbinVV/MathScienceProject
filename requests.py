@@ -30,6 +30,7 @@ def get_table():
             'chi_square': Tables.get_chi_square_table,
             'correlation': Tables.get_correlation_table,
             'student': Tables.get_student_table,
+            'student_partial': Tables.get_partial_student_table,
             'partial_correlation': Tables.get_partial_correlation_table
         }[table_type](file_name))
 
@@ -83,7 +84,9 @@ def get_linear_regression_coefficients():
     regression = linear_model.LinearRegression()
     regression.fit(x_data_frame, y_data_frame)
 
-    return Helpers.generate_successful_response(data=regression.coef_.tolist())
+    return Helpers.generate_successful_response(data={
+        'coef': regression.coef_.tolist(),
+        'intercept': regression.intercept_.tolist()})
 
 
 def get_regression_student_coefficients_matrix():

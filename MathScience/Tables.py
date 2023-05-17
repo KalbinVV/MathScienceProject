@@ -186,6 +186,25 @@ def get_student_table(file_name: str):
     return pd.DataFrame(correlation)
 
 
+def get_partial_student_table(file_name: str):
+    correlation = get_partial_correlation_table(file_name).to_dict()
+
+    n = 12
+    l = 6
+
+    for i in correlation.keys():
+        for j in correlation[i].keys():
+            if isinstance(correlation[i][j], str):
+                continue
+
+            try:
+                correlation[i][j] = (correlation[i][j] / ((1 - (correlation[i][j] ** 2)) ** 0.5)) * ((n - l - 2) ** 0.5)
+            except (Exception,):
+                correlation[i][j] = '-'
+
+    return pd.DataFrame(correlation)
+
+
 def get_linear_regression_coefficients(file_name: str, y: str) -> pd.DataFrame:
     data_frame = get_normalized_table(file_name)
 
