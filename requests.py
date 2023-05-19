@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from flask import request
 from pandas.core.dtypes.common import is_string_dtype

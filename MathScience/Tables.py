@@ -142,13 +142,12 @@ def get_chi_square_table(file_name: str) -> pd.DataFrame:
 def get_correlation_table(file_name: str) -> pd.DataFrame:
     data_frame = get_normalized_table(file_name)
 
+    data_frame = Helpers.remove_string_columns(data_frame)
+
     # Fix for PythonAnywhere
     version_of_pandas = float('.'.join(pd.__version__.split('.')[0:1]))
 
-    if version_of_pandas >= 1.5:
-        correlation_data_frame = data_frame.corr(numeric_only=True).round(3)
-    else:
-        correlation_data_frame = data_frame.corr().round(3)
+    correlation_data_frame = Statistics.corr(data_frame)
 
     # Трюк с колонкой названий
     correlation_data_frame.insert(0, " ", correlation_data_frame.columns)
@@ -224,7 +223,7 @@ def get_linear_regression_coefficients(file_name: str, y: str) -> pd.DataFrame:
 
     response_dictionary = {
         'Параметр': ['b' + str(i) for i in range(len(regression.coef_) + 1)],
-        'Значение': [regression.intercept_,*regression.coef_.tolist()]
+        'Значение': [regression.intercept_, *regression.coef_.tolist()]
     }
 
     response_data_frame = pd.DataFrame(response_dictionary)

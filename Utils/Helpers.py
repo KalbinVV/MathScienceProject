@@ -118,3 +118,15 @@ def generate_successful_response(**kwargs):
 
 def generate_error_response(message: str) -> dict:
     return {'status': False, 'reason': message}
+
+
+def remove_string_columns(data_frame: pd.DataFrame) -> pd.DataFrame:
+    columns_to_removes = list()
+
+    for column in data_frame:
+        if is_string_dtype(data_frame[column]):
+            columns_to_removes.append(column)
+
+    data_frame = data_frame.drop(labels=columns_to_removes, axis=1)
+
+    return data_frame
