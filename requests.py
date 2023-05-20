@@ -175,4 +175,15 @@ def get_regression_fault():
 def get_multiple_correlation_coefficients():
     file_name = request.args['file']
 
-    return Tables.get_multiple_correlation_coefficients_table(file_name)
+    response = Helpers.convert_dataframe_to_dict(Tables.get_multiple_correlation_coefficients_table(file_name))
+
+    return Helpers.generate_successful_response(data=response)
+
+
+def get_phisher_regression_coefficients():
+    file_name = request.args['file']
+    y = request.args['y']
+
+    response = Helpers.convert_dataframe_to_dict(Tables.get_phisher_correlation_coefficients_table(file_name, y))
+
+    return Helpers.generate_successful_response(data=response)

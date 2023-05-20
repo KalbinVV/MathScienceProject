@@ -161,6 +161,22 @@ def corr(data_frame: pd.DataFrame) -> pd.DataFrame:
 
 
 # Парная корреляция
+def pearson(x, y):
+    size = len(x)
+
+    mean_of_x = mean(x)
+    mean_of_y = mean(y)
+    std_of_x = standard_deviation(x)
+    std_of_y = standard_deviation(y)
+
+    sum_of_values = 0
+
+    for i in range(size):
+        sum_of_values += ((x[i] - mean_of_x) / std_of_x) * ((y[i] - mean_of_y) / std_of_y)
+
+    return (1 / (size - 1)) * sum_of_values
+
+
 def pearsonr(x, y):
     n = len(x)
     sum_x = float(sum(x))
@@ -174,7 +190,6 @@ def pearsonr(x, y):
         return 0
 
     return num / den
-
 
 def least_squares(X, Y):
     if not isinstance(X[0], list):

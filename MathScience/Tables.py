@@ -253,10 +253,55 @@ def get_multiple_correlation_coefficients_table(file_name: str):
 
         r_value = sqrt(1 - (determinant / algebraic_additional))
 
-        r_value = r_value if r_value < 1 else 0.99
+        r_value = r_value if r_value < 0.98 else 0.99
+
+        multiple_r = r_value ** 2
 
         result_dict[column]['r'] = r_value
-        result_dict[column]['r^2'] = r_value ** 2
+        result_dict[column]['r^2'] = multiple_r
 
-    return Helpers.generate_successful_response(data=Helpers.convert_dataframe_to_dict(pd.DataFrame(result_dict)))
+        n = 12
+        k = 8
 
+        result_dict[column]['F - Критерий'] = (1 / (k - 1) * multiple_r) / (1 / (n - k) * (1 - multiple_r))
+
+    return pd.DataFrame(result_dict)
+
+
+def get_phisher_correlation_coefficients_table(file_name: str,  y: str):
+    data_frame = get_normalized_table(file_name)
+
+    incorrect_columns = list()
+
+    for column in data_frame.columns:
+        if is_string_dtype(data_frame[column]):
+            incorrect_columns.append(column)
+
+    data_frame = data_frame.drop(labels=incorrect_columns, axis=1)
+
+    y_data_frame = data_frame[y]
+    x_data_frame = data_frame.drop(labels=y, axis=1)
+
+    regression = linear_model.LinearRegression()
+    regression.fit(x_data_frame, y_data_frame)
+
+    coefficients = regression.coef_
+
+    f1 = len(coefficients)
+    f2 = 12 - f1 - 1
+
+    factor = f1 / f2
+
+    response_dictionary = {
+        'Параметр': [f'F{i + 1}' for i in range(len(regression.coef_))],
+        'Значение': list()
+    }
+
+    for i in range(len(coefficients)):
+        multiple_coefficient = coefficients[i] ** 2
+
+        value = multiple_coefficient / (1 - multiple_coefficient)
+
+        response_dictionary['Значение'].append(value * factor)
+
+    return pd.DataFrame(response_dictionary)

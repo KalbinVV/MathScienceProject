@@ -493,14 +493,31 @@ $(document).ready(function(){
     })
 
     $('#multiple_coefficient_correlation_table_button').click(event => {
+        event.currentTarget.style.display = 'none'
+
         $.ajax({
             url: '/get_multiple_correlation_coefficients',
             type: 'GET',
             data: {file: FILE_NAME},
             success: function(response) {
+                console.log(response)
                 response.data.columns.splice(0, 0, '')
-                response.data[''] = ['r', 'r^2']
+                response.data[''] = ['r', 'r^2', 'F - Критерий']
                 renderTable('#multiple_coefficient_correlation_table_content', response.data)
+            }
+        })
+    })
+
+    $('#phisher_regression_table_button').click(event => {
+        event.currentTarget.style.display = 'none'
+
+        $.ajax({
+            url: '/get_phisher_regression_coefficients',
+            type: 'GET',
+            data: {file: FILE_NAME, y: 'Количество циклов'},
+            success: function(response) {
+                console.log(response)
+                renderTable('#phisher_regression_table_content', response.data)
             }
         })
     })
