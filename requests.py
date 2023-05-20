@@ -170,3 +170,9 @@ def get_regression_fault():
     response_data_frame = pd.DataFrame(result_dict)
 
     return Helpers.generate_successful_response(data=Helpers.convert_dataframe_to_dict(response_data_frame))
+
+
+def get_multiple_correlation_coefficients():
+    file_name = request.args['file']
+
+    return Tables.get_multiple_correlation_coefficients_table(file_name)

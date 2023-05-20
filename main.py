@@ -81,7 +81,8 @@ def main():
         '/get_linear_regression_coefficients_matrix': (requests.get_linear_regression_coefficients_matrix, ['GET']),
         '/get_linear_regression_student_coefficients': (requests.get_regression_student_coefficients_matrix, ['GET']),
         '/get_linear_regression_coefficients': (requests.get_linear_regression_coefficients, ['GET']),
-        '/get_regression_fault': (requests.get_regression_fault, ['GET'])
+        '/get_regression_fault': (requests.get_regression_fault, ['GET']),
+        '/get_multiple_correlation_coefficients': (requests.get_multiple_correlation_coefficients, ['GET'])
     }
 
     for key, tpl in requests_dictionary.items():

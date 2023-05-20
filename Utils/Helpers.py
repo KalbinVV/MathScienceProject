@@ -1,4 +1,5 @@
 import os.path
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -59,7 +60,7 @@ def get_count_of_files_in_directory(dir_path: str) -> int:
 
     for path in os.listdir(dir_path):
         if os.path.isfile(os.path.join(dir_path, path)):
-             count += 1
+            count += 1
 
     return count
 
@@ -107,7 +108,8 @@ def get_charts_data(file_name: str, amount_of_intervals: int = 5) -> list:
         interpolated_x = np.linspace(x.min(), x.max(), 100)
         interpolated_y = interpolation_spline(interpolated_x)
 
-        intervals.append([column, data_frame[column].to_numpy().tolist(), interpolated_x.tolist(), interpolated_y.tolist()])
+        intervals.append(
+            [column, data_frame[column].to_numpy().tolist(), interpolated_x.tolist(), interpolated_y.tolist()])
 
     return intervals
 
@@ -130,3 +132,14 @@ def remove_string_columns(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame = data_frame.drop(labels=columns_to_removes, axis=1)
 
     return data_frame
+
+
+def convert_dict_to_matrix(dictionary: dict) -> list[list[Any]]:
+    result_matrix = []
+
+    for index, i_key in enumerate(dictionary.keys()):
+        result_matrix.append([])
+        for j_key in dictionary[i_key]:
+            result_matrix[index].append(dictionary[i_key][j_key])
+
+    return result_matrix

@@ -491,4 +491,17 @@ $(document).ready(function(){
             }
         })
     })
+
+    $('#multiple_coefficient_correlation_table_button').click(event => {
+        $.ajax({
+            url: '/get_multiple_correlation_coefficients',
+            type: 'GET',
+            data: {file: FILE_NAME},
+            success: function(response) {
+                response.data.columns.splice(0, 0, '')
+                response.data[''] = ['r', 'r^2']
+                renderTable('#multiple_coefficient_correlation_table_content', response.data)
+            }
+        })
+    })
 })

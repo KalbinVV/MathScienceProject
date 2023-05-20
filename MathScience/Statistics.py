@@ -196,3 +196,8 @@ def least_squares(X, Y):
     coefs = np.linalg.solve(ATA, ATB)
 
     return coefs
+
+
+def minor(arr, i, j):
+    return arr[np.array(list(range(i)) + list(range(i + 1, arr.shape[0])))[:, np.newaxis],
+               np.array(list(range(j)) + list(range(j + 1, arr.shape[1])))]

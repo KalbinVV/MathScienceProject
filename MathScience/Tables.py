@@ -1,5 +1,7 @@
 from functools import lru_cache
+from math import sqrt, floor
 
+import numpy as np
 import pandas as pd
 from pandas.core.dtypes.common import is_string_dtype
 from scipy.stats import chisquare
@@ -229,3 +231,32 @@ def get_linear_regression_coefficients(file_name: str, y: str) -> pd.DataFrame:
     response_data_frame = pd.DataFrame(response_dictionary)
 
     return response_data_frame
+
+
+def get_multiple_correlation_coefficients_table(file_name: str):
+    data_frame = get_correlation_table(file_name)
+    data_frame = Helpers.remove_string_columns(data_frame)
+
+    matrix = Helpers.convert_dict_to_matrix(data_frame.to_dict())
+
+    determinant = np.linalg.det(matrix).astype(float)
+
+    result_dict = {}
+
+    for column in data_frame.columns:
+        result_dict[column] = dict()
+
+    for i, column in enumerate(data_frame.columns):
+        algebraic_additional = np.linalg.det(Statistics.minor(np.array(matrix), i, i)).astype(float)
+
+        algebraic_additional = algebraic_additional if algebraic_additional != 0 else 0.1
+
+        r_value = sqrt(1 - (determinant / algebraic_additional))
+
+        r_value = r_value if r_value < 1 else 0.99
+
+        result_dict[column]['r'] = r_value
+        result_dict[column]['r^2'] = r_value ** 2
+
+    return Helpers.generate_successful_response(data=Helpers.convert_dataframe_to_dict(pd.DataFrame(result_dict)))
+
