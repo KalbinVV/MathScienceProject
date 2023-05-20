@@ -92,32 +92,35 @@ def get_linear_regression_coefficients():
 
 def get_regression_student_coefficients_matrix():
     file_name = request.args['file']
-    y_column = request.args['y']
+    y = request.args['y']
+
+    file_name = request.args['file']
+    y = request.args['y']
 
     data_frame = Tables.get_normalized_table(file_name)
 
+    data_frame = Helpers.remove_string_columns(data_frame)
+
+    y_data_frame = data_frame[y]
+    x_data_frame = data_frame.drop(labels=y, axis=1)
+
+    regression = linear_model.LinearRegression()
+    regression.fit(x_data_frame, y_data_frame)
+
+    result_dict = {
+        'Параметр': [f'b{i + 1}' for i in range(len(regression.coef_))],
+        't': []
+    }
+
+    columns = x_data_frame.columns
+
     try:
-        linear_regression_coefficients = Tables.get_linear_regression_coefficients(file_name, y_column).to_dict()
+        linear_regression_coefficients = regression.coef_
 
-        columns = data_frame.columns.tolist()
+        for i in range(len(columns)):
+            result_dict['t'].append(linear_regression_coefficients[i] / Statistics.average_sampling_error(x_data_frame[columns[i]]))
 
-        incorrect_columns = list()
-
-        for column in columns:
-            if is_string_dtype(data_frame[column]):
-                incorrect_columns.append(column)
-
-        for column in incorrect_columns:
-            columns.remove(column)
-
-        for i, value in enumerate(linear_regression_coefficients['Значение']):
-            linear_regression_coefficients['Значение'][i] /= Statistics.standard_deviation(data_frame[columns[i]])
-
-        linear_regression_coefficients['t'] = linear_regression_coefficients['Значение']
-
-        del linear_regression_coefficients['Значение']
-
-        linear_regression_student_data_frame = pd.DataFrame(linear_regression_coefficients)
+        linear_regression_student_data_frame = pd.DataFrame(result_dict)
 
         response_dict = Helpers.convert_dataframe_to_dict(linear_regression_student_data_frame)
 
