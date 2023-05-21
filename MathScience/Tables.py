@@ -87,8 +87,8 @@ def get_chi_square_table(file_name: str) -> pd.DataFrame:
         'Уровень значимости': [],
         'Число степеней свободы': [],
         'Критическое значение': [],
-        'Минимальное значение': [],
-        'Максимальное значение': [],
+        #'Минимальное значение': [],
+        #'Максимальное значение': [],
         'Шаг': [],
         'Интервалы': [],
         'Значение хи-квадрат': [],
@@ -112,8 +112,8 @@ def get_chi_square_table(file_name: str) -> pd.DataFrame:
         min_value = data_frame[column].min()
         max_value = data_frame[column].max()
 
-        chi_square_dictionary['Минимальное значение'].append(min_value)
-        chi_square_dictionary['Максимальное значение'].append(max_value)
+        #chi_square_dictionary['Минимальное значение'].append(min_value)
+        #chi_square_dictionary['Максимальное значение'].append(max_value)
 
         interval_step = (max_value - min_value) / amount_of_intervals
 

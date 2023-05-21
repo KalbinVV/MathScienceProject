@@ -487,7 +487,7 @@ $(document).ready(function(){
             success: function(response) {
                 console.log(response)
 
-                renderTable('#linear_regression_student_table_content', response.data, false)
+                renderTable('#linear_regression_student_table_content', response.data, false, true)
             }
         })
     })
